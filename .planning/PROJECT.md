@@ -34,6 +34,8 @@ When an invoice lands, tell the user exactly where every euro goes — so they n
 - [ ] "New Month" reset: clears floor coverage toggles, preserves balances and history
 - [ ] Floor items support optional expiry dates (auto-deactivate)
 - [ ] User can edit floor items, overflow ratios, account targets, and Wise buffer target
+- [ ] Every allocation decision is transparent: each move shows the exact calculation, rule applied, and reason (e.g. "37% of €2,000 invoice = €740 → Isybank (tax rule)")
+- [ ] AI suggestions (from CSV analysis) are always shown with the reasoning behind them, not just a number — user can see what pattern was detected and why the split was suggested
 - [ ] App runs locally in the browser (no server required)
 - [ ] Open source — publishable on GitHub, easy to run with `npm start`
 
