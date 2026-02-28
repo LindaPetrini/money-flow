@@ -8,7 +8,7 @@ progress:
   total_phases: 13
   completed_phases: 10
   total_plans: 34
-  completed_plans: 27
+  completed_plans: 28
 ---
 
 # Project State
@@ -23,16 +23,16 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 11 of 13 (Schema Foundation)
-Plan: 1 of 2
-Status: In progress
-Last activity: 2026-02-28 — 11-01 complete; 3 domain types added (source, theme, MerchantEntry), PersistedMerchants alias, read-time migration
+Plan: 2 of 2
+Status: Complete
+Last activity: 2026-02-28 — 11-02 complete; merchantStore created, applyTheme wired into settingsStore, loadMerchants in startup Promise.all
 
-Progress: [████████░░] 79% (27/34 plans complete)
+Progress: [████████░░] 82% (28/34 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 26
+- Total plans completed: 28
 - Average duration: ~15 min
 - Total execution time: ~6.5 hours
 
@@ -43,6 +43,7 @@ Progress: [████████░░] 79% (27/34 plans complete)
 | 01 Foundation | 3 | 0.75h | ~15min |
 | 02–10 (v1.0) | 23 | ~5.75h | ~15min |
 | 11-01 Schema Foundation | 1 | 5min | 5min |
+| 11-02 Schema Foundation | 1 | 8min | 8min |
 
 **Recent Trend:**
 - Last 5 plans: Phase 10 (fix-integration-defects ×3), Phase 9, Phase 8
@@ -66,6 +67,9 @@ Recent decisions affecting v1.1:
 - [Phase 11-01]: `merchantName` stored case-preserved (not lowercased) — Phase 13 research determines case sensitivity strategy
 - [Phase 11-01]: source migration uses `?? ''` (empty string) not `?? undefined` — Phase 12 can call `record.source.toLowerCase()` without null check
 - [Phase 11-01]: Read-time migration only (no disk write) — preserves backward compatibility with pre-v1.1 data
+- [Phase 11-02]: lookupMerchant has no initialized guard — returning undefined is correct "not found" behavior for both "not found" and "not loaded" states
+- [Phase 11-02]: upsertMerchant case-sensitive merchantName matching — Phase 13 determines normalization strategy
+- [Phase 11-02]: applyTheme is a private module-level helper, not exported from settingsStore
 
 ### Pending Todos
 
@@ -78,5 +82,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 11-01-PLAN.md — schema foundation types in place; ready for 11-02 merchantStore
+Stopped at: Completed 11-02-PLAN.md — Phase 11 complete; merchantStore created, applyTheme wired, startup Promise.all updated
 Resume file: None

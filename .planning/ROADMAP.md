@@ -29,7 +29,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 **Milestone Goal:** Enrich the CSV import flow with interactive AI analysis and extend the app with quality-of-life improvements — dark mode, invoice source tracking, history search/filter, AI transaction Q&A with merchant memory, and AI floor item detection.
 
-- [ ] **Phase 11: Schema Foundation** — Add new domain types and merchant store that all v1.1 features depend on
+- [x] **Phase 11: Schema Foundation** — Add new domain types and merchant store that all v1.1 features depend on (completed 2026-02-28)
 - [ ] **Phase 12: Quick Wins** — Dark mode toggle, invoice source field, client display in history, history search/filter
 - [ ] **Phase 13: AI Layer** — Transaction Q&A, merchant memory persistence, AI floor item detection
 
@@ -99,6 +99,6 @@ Plans:
 | 8. Verify Core UI | v1.0 | 1/1 | Complete | 2026-02-28 |
 | 9. Verify Configuration | v1.0 | 1/1 | Complete | 2026-02-28 |
 | 10. Fix Integration Defects | v1.0 | 3/3 | Complete | 2026-02-28 |
-| 11. Schema Foundation | 1/2 | In Progress|  | - |
+| 11. Schema Foundation | 2/2 | Complete   | 2026-02-28 | - |
 | 12. Quick Wins | v1.1 | 0/3 | Not started | - |
 | 13. AI Layer | v1.1 | 0/3 | Not started | - |
