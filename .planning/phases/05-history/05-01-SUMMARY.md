@@ -103,6 +103,14 @@ None — no external service configuration required.
 - Build passes (0 TypeScript errors), all 75 tests passing
 - Phase 6 (CSV + AI) can proceed; CORS concern for Anthropic browser API remains documented blocker
 
+## Self-Check: PASSED
+
+- `src/features/history/HistoryPage.tsx` — FOUND, no stub text
+- `formatHistoryDate`, `expandedId`, `handleNewMonth` — all present
+- `rotate-180`, `bg-amber-100`, `key={record.id}` — all present
+- Commit `cb4e601` — FOUND
+- Commit `592164a` (metadata) — FOUND
+
 ---
 *Phase: 05-history*
 *Completed: 2026-02-28*
