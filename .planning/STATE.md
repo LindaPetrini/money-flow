@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: AI-Powered Insights
-status: roadmap_ready
-last_updated: "2026-02-28"
+status: unknown
+last_updated: "2026-02-28T20:20:02.132Z"
 progress:
-  total_phases: 13
-  completed_phases: 10
-  total_plans: 34
+  total_phases: 11
+  completed_phases: 11
+  total_plans: 28
   completed_plans: 28
 ---
 
