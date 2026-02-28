@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-28T17:36:32.229Z"
+last_updated: "2026-02-28T18:10:53.864Z"
 progress:
   total_phases: 7
   completed_phases: 7
-  total_plans: 20
-  completed_plans: 20
+  total_plans: 21
+  completed_plans: 21
 ---
 
 # Project State
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-02-27)
 
 ## Current Position
 
-Phase: 7 of 7 (Hardening) — COMPLETE (2/2 plans done)
+Phase: 7 of 7 (Hardening) — COMPLETE (3/3 plans done)
 Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI), 7 (Hardening)
-Last completed: Phase 7 Plan 02 — App storage hardening UX (overlay, IDB banner, onboarding card)
-Last activity: 2026-02-28 — Phase 7 Plan 02 executed (StorageErrorProvider wired, permission-lost overlay, IDB banner, first-run onboarding)
+Last completed: Phase 7 Plan 03 — Storage settings tab (StorageSection component, SettingsPage Storage tab)
+Last activity: 2026-02-28 — Phase 7 Plan 03 executed (StorageSection + SettingsPage Storage tab, both UAT gaps closed)
 
-Progress: [████████████████████] 100% (7/7 phases complete, 20/20 plans complete)
+Progress: [████████████████████] 100% (7/7 phases complete, 21/21 plans complete)
 
 ## RESUME INSTRUCTIONS
 
@@ -62,6 +62,7 @@ Progress: [████████████████████] 100% (7
 | Phase 06-csv-import-ai-analysis P03 | 10 | 2 tasks | 1 files |
 | Phase 07-hardening P01 | 2 | 2 tasks | 4 files |
 | Phase 07-hardening P02 | 5 | 2 tasks | 2 files |
+| Phase 07-hardening P03 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,8 @@ Recent decisions affecting current work:
 - [Phase 07-hardening 07-02]: handleGrantAccess simplified — reload is sufficient, init() in main.tsx re-runs all store loads
 - [Phase 07-hardening 07-02]: isFirstRun = needsFsaPrompt && accounts.length === 0 distinguishes genuine first-run from returning user with lapsed permission
 - [Phase 07-hardening 07-02]: IDB banner gated on fsaDriver === null to avoid false positive during FSA permission-pending flow
+- [Phase 07-hardening]: StorageSection reads fsaDriver singleton directly (no props) — consistent with App.tsx pattern, avoids prop-drilling
+- [Phase 07-hardening]: AbortError from cancelled directory picker caught silently — no reload or error shown to user
 
 ### Pending Todos
 
@@ -113,7 +116,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 7 Plan 02 (07-02) complete — all 7 phases done; 114 tests passing; build passes.
+Stopped at: Phase 7 Plan 03 (07-03) complete — storage settings tab added, all UAT gaps closed; 114 tests passing; build passes.
 Resume file: None
 
 ### Execution Notes (Phase 1)
