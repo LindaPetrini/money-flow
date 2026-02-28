@@ -73,7 +73,12 @@ Plans:
   3. User can set overflow ratios that sum to 100% across non-floor accounts (UI enforces the constraint)
   4. User can set tax percentage (default 37%) and choose which account receives it
   5. On first run, default configuration (tax bucket + everyday/fun/savings/investing split) is pre-loaded and user can accept or edit before processing a first invoice
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 04-01-PLAN.md — Settings tab infrastructure: add Settings tab to App.tsx + SettingsPage shell with sub-section nav
+- [ ] 04-02-PLAN.md — Account configuration: list, edit, add, delete accounts via accountStore
+- [ ] 04-03-PLAN.md — Floor items configuration: list by priority, add/edit/delete, expiry auto-deactivation
+- [ ] 04-04-PLAN.md — Overflow ratios (100% enforcement) + Tax & Buffer settings form
 
 ### Phase 5: History
 **Goal**: Users can review the full log of past allocations and reset floor coverage for a new month
@@ -118,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. Foundation | 0/? | Not started | - |
 | 2. Allocation Engine | 3/3 | Complete   | 2026-02-28 |
 | 3. Core UI | 0/? | Not started | - |
-| 4. Configuration | 0/? | Not started | - |
+| 4. Configuration | 0/4 | Not started | - |
 | 5. History | 0/? | Not started | - |
 | 6. CSV Import & AI Analysis | 0/? | Not started | - |
 | 7. Hardening | 0/? | Not started | - |
