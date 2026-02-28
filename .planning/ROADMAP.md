@@ -56,7 +56,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Clicking "Done" updates all account balances in one operation and appends the allocation to history — no partial state
   4. The dashboard shows all account balances with visual at-target / near-target / below-target indicators
   5. User can edit any account balance inline without leaving the dashboard
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 03-01-PLAN.md — Default configuration + store initialization bootstrap
+- [ ] 03-02-PLAN.md — Dashboard screen with account cards, status indicators, mode badge, inline balance editing
+- [ ] 03-03-PLAN.md — Invoice entry form, allocation result view, atomic Done confirmation
+- [ ] 03-04-PLAN.md — Tab navigation shell wiring Dashboard, InvoicePage, and History placeholder
 
 ### Phase 4: Configuration
 **Goal**: Users can configure all accounts, floor items, overflow ratios, and tax settings through the UI — no hardcoded defaults remain after setup
