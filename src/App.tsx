@@ -7,16 +7,23 @@ import { HistoryPage } from '@/features/history/HistoryPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Sun, Moon, Monitor } from 'lucide-react';
+import { useSettingsStore } from '@/stores/settingsStore';
 
 interface AppProps {
   needsFsaPrompt: boolean;
   storageMode: 'fsa' | 'idb';
 }
 
+const THEME_CYCLE = { system: 'light', light: 'dark', dark: 'system' } as const;
+type ThemeValue = 'light' | 'dark' | 'system';
+
 export default function App({ needsFsaPrompt, storageMode }: AppProps) {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'invoice' | 'history' | 'settings'>('dashboard');
   const { permissionLost } = useStorageError();
   const isFirstRun = needsFsaPrompt;
+  const theme = useSettingsStore(s => s.settings.theme ?? 'system');
+  const updateSettings = useSettingsStore(s => s.updateSettings);
   const [idbNoticeDismissed, setIdbNoticeDismissed] = useState(
     () => localStorage.getItem('idb_notice_dismissed') === '1'
   );
@@ -59,6 +66,16 @@ export default function App({ needsFsaPrompt, storageMode }: AppProps) {
       {/* Top bar */}
       <header className="border-b border-border px-4 py-3 flex items-center justify-between">
         <span className="font-semibold text-sm">Money Flow</span>
+        <button
+          type="button"
+          onClick={() => void updateSettings({ theme: THEME_CYCLE[theme] as ThemeValue })}
+          className="p-1.5 rounded hover:bg-muted transition-colors"
+          aria-label={`Current theme: ${theme}. Click to switch.`}
+        >
+          {theme === 'dark' ? <Moon className="h-4 w-4" />
+            : theme === 'light' ? <Sun className="h-4 w-4" />
+            : <Monitor className="h-4 w-4" />}
+        </button>
       </header>
 
       {/* IDB notice banner — shown only on true Firefox/Safari (fsaDriver === null), dismissible */}
