@@ -149,10 +149,10 @@
 
 **Coverage:**
 - v1 requirements: 38 total
-- Mapped to phases: 38
+- Mapped to phases: 38 (Phases 1-6; Phase 7 is hardening of INFRA-04/INFRA-05 to production quality)
 - Unmapped: 0 ✓
 
 ---
 
 *Requirements defined: 2026-02-28*
-*Last updated: 2026-02-28 after initial definition*
+*Last updated: 2026-02-28 after roadmap creation (7 phases confirmed)*
