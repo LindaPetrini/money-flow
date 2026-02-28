@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 4: Configuration** - Floor items, overflow ratios, tax bucket, accounts, and default setup
 - [x] **Phase 5: History** - Allocation history log view with monthly reset (completed 2026-02-28)
 - [x] **Phase 6: CSV Import & AI Analysis** - CSV upload, parsing, AI categorization, and suggestion UI (completed 2026-02-28)
-- [ ] **Phase 7: Hardening** - Production-quality error recovery, FSA re-prompt UX, onboarding polish
+- [x] **Phase 7: Hardening** - Production-quality error recovery, FSA re-prompt UX, onboarding polish (completed 2026-02-28)
 
 ## Phase Details
 
@@ -126,4 +126,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Configuration | 2/4 | In Progress|  |
 | 5. History | 1/1 | Complete   | 2026-02-28 |
 | 6. CSV Import & AI Analysis | 3/3 | Complete   | 2026-02-28 |
-| 7. Hardening | 1/2 | In Progress|  |
+| 7. Hardening | 2/2 | Complete   | 2026-02-28 |

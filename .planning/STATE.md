@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-02-28T17:29:30.095Z"
+status: complete
+last_updated: "2026-02-28T17:35:00.000Z"
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 20
-  completed_plans: 19
+  completed_plans: 20
 ---
 
 # Project State
@@ -18,32 +18,30 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** Phase 7 — Hardening (next phase)
+**Current focus:** COMPLETE — all 7 phases executed
 
 ## Current Position
 
-Phase: 7 of 7 (Hardening) — IN PROGRESS (1/2 plans done)
-Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI)
-Last completed: Phase 7 Plan 01 — StorageErrorContext + store write guards
-Last activity: 2026-02-28 — Phase 7 Plan 01 executed (StorageErrorContext bridge, NotAllowedError guards in all 3 stores)
+Phase: 7 of 7 (Hardening) — COMPLETE (2/2 plans done)
+Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI), 7 (Hardening)
+Last completed: Phase 7 Plan 02 — App storage hardening UX (overlay, IDB banner, onboarding card)
+Last activity: 2026-02-28 — Phase 7 Plan 02 executed (StorageErrorProvider wired, permission-lost overlay, IDB banner, first-run onboarding)
 
-Progress: [████████████████████] ~95% (6/7 planned phases complete, 1 plan remaining)
+Progress: [████████████████████] 100% (7/7 phases complete, 20/20 plans complete)
 
 ## RESUME INSTRUCTIONS
 
-**Next step:** Execute Phase 7 Plan 02
-- StorageErrorContext bridge complete — stores signal permission loss via reportPermissionLost()
-- Next: wire StorageErrorProvider into App.tsx and render permission-lost banner via useStorageError()
+**All phases complete.** No further execution needed.
 
 **Build state:** Clean — `npm run build` passes, 114 tests passing (5 test files)
-**No blockers** — CORS concern resolved per research
+**No blockers**
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 20
 - Average duration: ~15 min
-- Total execution time: 0.75 hours
+- Total execution time: ~5 hours
 
 **By Phase:**
 
@@ -52,8 +50,8 @@ Progress: [████████████████████] ~95% (6
 | 01 Foundation | 3 | 0.75h | ~15min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (scaffold), 01-02 (TDD cents), 01-03 (storage/stores)
-- Trend: On track
+- Last 5 plans: 06-03 (AI suggestions), 07-01 (StorageErrorContext), 07-02 (App hardening UX)
+- Trend: Complete
 
 *Updated after each plan completion*
 | Phase 02-allocation-engine P03 | 10 | 2 tasks | 2 files |
@@ -63,6 +61,7 @@ Progress: [████████████████████] ~95% (6
 | Phase 06-csv-import-ai-analysis P02 | 9 | 2 tasks | 3 files |
 | Phase 06-csv-import-ai-analysis P03 | 10 | 2 tasks | 1 files |
 | Phase 07-hardening P01 | 2 | 2 tasks | 4 files |
+| Phase 07-hardening P02 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -99,10 +98,13 @@ Recent decisions affecting current work:
 - [Phase 06-csv-import-ai-analysis 06-03]: Both analysisResult and suggestions reset to null after successful Apply — prevents stale re-apply
 - [Phase 07-hardening]: set() before try/catch in store writes — in-memory state preserved on FSA permission loss
 - [Phase 07-hardening]: Module-level setter pattern bridges Zustand stores to React context without hooks in store code
+- [Phase 07-hardening 07-02]: handleGrantAccess simplified — reload is sufficient, init() in main.tsx re-runs all store loads
+- [Phase 07-hardening 07-02]: isFirstRun = needsFsaPrompt && accounts.length === 0 distinguishes genuine first-run from returning user with lapsed permission
+- [Phase 07-hardening 07-02]: IDB banner gated on fsaDriver === null to avoid false positive during FSA permission-pending flow
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
@@ -111,7 +113,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 7 Plan 01 (07-01) complete — StorageErrorContext + store write guards; 114 tests passing; build passes.
+Stopped at: Phase 7 Plan 02 (07-02) complete — all 7 phases done; 114 tests passing; build passes.
 Resume file: None
 
 ### Execution Notes (Phase 1)
