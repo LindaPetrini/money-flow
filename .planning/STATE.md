@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-28T16:34:18.355Z"
+last_updated: "2026-02-28T16:44:58Z"
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 18
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State
@@ -18,22 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** Phase 6 — CSV + AI (IN PROGRESS — Plan 01 done, Plans 02-03 remain)
+**Current focus:** Phase 6 — CSV + AI (IN PROGRESS — Plans 01-02 done, Plan 03 remains)
 
 ## Current Position
 
-Phase: 6 of 7 (CSV + AI) — IN PROGRESS (1/3 plans done)
+Phase: 6 of 7 (CSV + AI) — IN PROGRESS (2/3 plans done)
 Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History)
-Last completed: Phase 6 Plan 01 — csvParser.ts with full TDD (39 tests, 114 total)
-Last activity: 2026-02-28 — Phase 6 Plan 01 executed (csvParser: detectBankFormat, parseEuropeanAmount, extractExpenses, parseCSVFile)
+Last completed: Phase 6 Plan 02 — anthropicClient.ts + CsvAiSection.tsx (API key UI, file upload, transaction preview)
+Last activity: 2026-02-28 — Phase 6 Plan 02 executed (anthropicClient: callAnthropicAPI, AIAnalysisResult, AnthropicAPIError; CsvAiSection: API key + upload + preview)
 
-Progress: [██████████████░░░░░░] ~71% (5/7 phases complete, Phase 6 in progress)
+Progress: [██████████████░░░░░░] ~72% (5/7 phases complete, Phase 6 in progress)
 
 ## RESUME INSTRUCTIONS
 
-**Next step:** Execute Phase 6 Plan 02 (anthropicClient.ts) then Plan 03 (CsvAiSection UI)
-- CORS concern resolved: `anthropic-dangerous-direct-browser-access: true` header confirmed working (see RESEARCH.md)
-- No proxy needed — direct fetch() from browser
+**Next step:** Execute Phase 6 Plan 03 (CsvAiSection suggestion cards + Apply logic)
+- anthropicClient.ts and CsvAiSection.tsx complete — analysisResult state ready for Plan 03 to render
+- Suggestion cards: 4 buckets, editable amounts, Accept/Skip toggles, Apply button
+- Apply: recalculate overflowRatios from accepted amounts, update settingsStore
 - Then Phase 7 (Hardening)
 
 **Build state:** Clean — `npm run build` passes, 114 tests passing (5 test files)
@@ -61,6 +62,7 @@ Progress: [██████████████░░░░░░] ~71% (5
 | Phase 04-configuration P02 | 5 | 2 tasks | 2 files |
 | Phase 05-history P01 | 1 | 2 tasks | 1 file |
 | Phase 06-csv-import-ai-analysis P01 | 7 | 2 tasks | 4 files |
+| Phase 06-csv-import-ai-analysis P02 | 9 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -88,6 +90,9 @@ Recent decisions affecting current work:
 - [Phase 05-history 05-01]: formatHistoryDate uses split('-').map(Number) then new Date(year, month-1, day) to avoid UTC midnight shift
 - [Phase 06-csv-import-ai-analysis]: Comma-decimal normalization: if comma present, dots are thousand separators — safe for both European and dot-decimal formats
 - [Phase 06-csv-import-ai-analysis]: parseCSVFile returns [] for unknown format (no throw) — caller shows unrecognised format message
+- [Phase 06-csv-import-ai-analysis 06-02]: BUCKET_SCHEMA reused for all 4 bucket types — avoids repetition while keeping full inline schema
+- [Phase 06-csv-import-ai-analysis 06-02]: Format detection uses Papa.parse preview:1 per file — no change to csvParser.ts interface needed
+- [Phase 06-csv-import-ai-analysis 06-02]: API key lives only in localStorage — never in React state as real value; masked display string only
 
 ### Pending Todos
 
@@ -100,7 +105,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 6 Plan 01 (06-01) complete — csvParser.ts with 39 tests, 114 total passing; build passes.
+Stopped at: Phase 6 Plan 02 (06-02) complete — anthropicClient.ts + CsvAiSection.tsx; 114 tests passing; build passes.
 Resume file: None
 
 ### Execution Notes (Phase 1)
