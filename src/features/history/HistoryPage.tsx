@@ -78,6 +78,11 @@ export function HistoryPage() {
                     <span className="text-sm font-medium">
                       {formatHistoryDate(record.date)}
                     </span>
+                    {record.source && (
+                      <span className="text-xs text-muted-foreground truncate max-w-[120px]" title={record.source}>
+                        {record.source}
+                      </span>
+                    )}
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${modeBadgeClass}`}
                     >
