@@ -42,13 +42,13 @@
 
 ### Configuration (CONFIG)
 
-- [ ] **CONFIG-01**: User can configure accounts (name, target balance, role: income-hub / spending / savings / tax / investing)
-- [ ] **CONFIG-02**: User can configure floor items (name, amount in cents, priority order, destination account)
-- [ ] **CONFIG-03**: Floor items support optional expiry dates — auto-deactivate when expired
-- [ ] **CONFIG-04**: User can configure overflow ratios (percentage split for Distribute mode across non-floor accounts)
-- [ ] **CONFIG-05**: User can configure Wise buffer target (minimum balance to keep in income-hub account)
-- [ ] **CONFIG-06**: User can configure tax percentage (default 37%)
-- [ ] **CONFIG-07**: Default configuration provided on first run: tax bucket + everyday/fun/savings/investing split — user can accept defaults or edit before first invoice
+- [x] **CONFIG-01**: User can configure accounts (name, target balance, role: income-hub / spending / savings / tax / investing)
+- [x] **CONFIG-02**: User can configure floor items (name, amount in cents, priority order, destination account)
+- [x] **CONFIG-03**: Floor items support optional expiry dates — auto-deactivate when expired
+- [x] **CONFIG-04**: User can configure overflow ratios (percentage split for Distribute mode across non-floor accounts)
+- [x] **CONFIG-05**: User can configure Wise buffer target (minimum balance to keep in income-hub account)
+- [x] **CONFIG-06**: User can configure tax percentage (default 37%)
+- [x] **CONFIG-07**: Default configuration provided on first run: tax bucket + everyday/fun/savings/investing split — user can accept defaults or edit before first invoice
 
 ### History & Monthly Reset (HIST)
 
@@ -128,13 +128,13 @@
 | DASH-02 | Phase 3 (verified Phase 8) | Complete |
 | DASH-03 | Phase 3 (verified Phase 8) | Complete |
 | DASH-04 | Phase 3 (verified Phase 8) | Complete |
-| CONFIG-01 | Phase 9 | Pending |
-| CONFIG-02 | Phase 9 | Pending |
-| CONFIG-03 | Phase 9 | Pending |
-| CONFIG-04 | Phase 9 | Pending |
-| CONFIG-05 | Phase 9 | Pending |
-| CONFIG-06 | Phase 9 | Pending |
-| CONFIG-07 | Phase 9 | Pending |
+| CONFIG-01 | Phase 4 (verified Phase 9) | Complete |
+| CONFIG-02 | Phase 4 (verified Phase 9) | Complete |
+| CONFIG-03 | Phase 4 (verified Phase 9) | Complete |
+| CONFIG-04 | Phase 4 (verified Phase 9) | Complete |
+| CONFIG-05 | Phase 4 (verified Phase 9) | Complete |
+| CONFIG-06 | Phase 4 (verified Phase 9) | Complete |
+| CONFIG-07 | Phase 4 (verified Phase 9) | Complete |
 | HIST-01 | Phase 5 | Complete |
 | HIST-02 | Phase 5 | Complete |
 | HIST-03 | Phase 5 | Complete |
@@ -151,7 +151,7 @@
 - v1 requirements: 39 total
 - Mapped to phases: 39 (Phases 1-7 core build; Phases 8-9 gap closure verification; Phase 10 integration defect fixes)
 - Unmapped: 0 ✓
-- Pending (gap closure): 7 (CONFIG-01/02/03/04/05/06/07 → close via Phase 9)
+- Pending (gap closure): 0 — all CONFIG requirements verified via Phase 9
 
 ---
 
