@@ -1,362 +1,491 @@
 # Stack Research
 
-**Domain:** Local-first browser app — freelance budget allocator
-**Researched:** 2026-02-27
-**Confidence:** HIGH (core stack verified via official docs and current npm releases)
+**Domain:** Local-first browser app — freelance budget allocator (v1.1 additions)
+**Researched:** 2026-02-28
+**Confidence:** HIGH (all findings verified against official docs and live codebase)
 
 ---
 
-## Recommended Stack
+## Context: What This File Covers
 
-### Core Technologies
+v1.0 stack is locked and validated. This file documents ONLY the stack additions and
+behavioral clarifications needed for v1.1 features:
 
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Vite | 7.3.1 | Build tool + dev server | Industry standard replacement for CRA. Vite 7 ships ESM-only, targets `baseline-widely-available` (Chrome 107, Firefox 104, Safari 16), drops Node 18. First-party `@tailwindcss/vite` plugin gives tighter Tailwind integration than PostCSS. Fastest HMR in the ecosystem. |
-| React | 19.2.4 | UI framework | Concurrent rendering by default. New `use()` hook, `useActionState`, `useFormStatus`, `useOptimistic`. React Compiler reduces need for manual `useMemo`/`useCallback`. Required by shadcn/ui Tailwind v4 + New York path. |
-| TypeScript | 5.7+ (bundled with Vite template) | Type safety | Minimum required by Zustand 5. Vite transpiles via esbuild (~20-30x faster than `tsc`). Strict mode essential for money-math type safety (cents as `number` vs mixed types). |
-| Tailwind CSS | 4.2.1 | Utility-first CSS | v4 is CSS-first: no `tailwind.config.js`, no PostCSS config needed. Single `@import "tailwindcss"` in CSS. Auto content detection. Up to 100x faster incremental builds. OKLCH color system. `@theme` directive replaces JS config. |
-| @tailwindcss/vite | 4.2.1 | Vite plugin for Tailwind | First-party Vite plugin — replaces PostCSS integration. Must match Tailwind major.minor version. Added to `vite.config.ts` plugins array. |
-| shadcn/ui | latest CLI | Component library | Not a package — components copied into `src/components/ui/`. New York variant is now the default in Tailwind v4. HSL colors migrated to OKLCH. `tailwindcss-animate` replaced by `tw-animate-css`. `ForwardRef` removed; `data-slot` attributes added. Fully supports Tailwind v4 + React 19. |
-| Zustand | 5.0.11 | Client UI state | Minimal boilerplate, zero provider setup, works outside React tree. No `persist` middleware — FSA + idb own persistence; Zustand holds in-session runtime state only. `use-sync-external-store` is now a peer dependency (React 19 provides it). React 19 concurrent mode compatible. |
-| idb | 8.0.3 | IndexedDB wrapper | Tiny (~1.19kB brotli). Mirrors IndexedDB API with Promises. Used for: (1) persisting FSA `FileSystemDirectoryHandle` objects across sessions, (2) metadata/config storage as fallback when FSA directory is not yet opened. |
-| File System Access API | Browser-native | Primary persistence | User selects a directory once; app writes human-readable JSON files directly to disk. Survives browser cache clears. FileHandles serialized into IndexedDB via structured clone algorithm. Chrome 122+ persistent permission prompt available. |
-| Vitest | 4.0.18 | Test runner | Vite-native (reuses vite config, no separate bundler startup). Jest-compatible API. v4 adds stable Browser Mode, visual regression, Playwright trace support. `basic` reporter removed. Requires Vite 7 (min Vitest 3.2 for Vite 7 support; v4 exceeds that). |
+1. Dark mode — Tailwind v4 class strategy, how it differs from v3
+2. Merchant-to-bucket label persistence — storage approach using existing idb infrastructure
+3. History search/filter — client-side filtering pattern, no additional library
+4. AI transaction Q&A — streaming vs batch for conversational UX
 
-### Supporting Libraries
+Existing validated stack (do not re-research or change):
+Vite 7 + React 19 + TypeScript + Tailwind v4.2.1 + shadcn/ui New York + Zustand 5 +
+idb 8 + File System Access API + Vitest 4 + Anthropic direct browser API + Papa.parse
 
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| @vitejs/plugin-react | 4.x | React + HMR support in Vite | Required plugin for React in Vite. Use Babel-based (not SWC) — more stable with shadcn transforms. |
-| @testing-library/react | 16.x | Component testing utilities | All component tests. React 19 support added in v16. Do NOT use v14/v15 with React 19. |
-| @testing-library/user-event | 14.x | Realistic user interaction simulation | Form tests, button clicks, input changes. More realistic than `fireEvent`. |
-| @testing-library/jest-dom | 6.x | Custom DOM matchers | `toBeInTheDocument()`, `toHaveValue()`, etc. Import in vitest setup file. |
-| jsdom | 25.x | DOM environment for Vitest | Configure as `environment: 'jsdom'` in vitest config. Required for React component tests. |
-| tw-animate-css | 1.x | Animation utilities | Replaces deprecated `tailwindcss-animate`. Import with `@import "tw-animate-css"` in globals.css. Provides `accordion-down`, animate-in/out vocabulary. |
-| lucide-react | 0.x (latest) | Icons | shadcn/ui default icon set. Tree-shakeable SVG icons used throughout shadcn components. |
+---
 
-### Development Tools
+## v1.1 Stack Additions
 
-| Tool | Purpose | Notes |
-|------|---------|-------|
-| Node.js 20.19+ or 22.12+ | Runtime | Vite 7 dropped Node 18 (EOL April 2025). Verify with `node --version` before scaffolding. |
-| npm | Package manager | Prefer npm for open-source `npm start` compatibility. |
-| ESLint | Linting | Included in Vite react-ts template. |
-| tsc --noEmit | Type checking | esbuild transpiles but does NOT type-check. Run separately in CI. |
-| React DevTools | Debug | Browser extension. Zustand DevTools middleware optional in dev mode. |
+### New Dependencies
+
+| Library | Version | Purpose | Why |
+|---------|---------|---------|-----|
+| None required | — | — | All v1.1 features build on the existing stack |
+
+**Zero new npm dependencies needed.** Every v1.1 feature is achievable with what is
+already installed. Details follow per feature area.
+
+---
+
+## Feature Area 1: Dark Mode with Tailwind v4
+
+### How v4 Dark Mode Differs from v3
+
+**v3 approach (do not use):**
+```js
+// tailwind.config.js — does not exist in this project
+module.exports = { darkMode: 'class' }
+```
+
+**v4 approach (CSS-first):**
+```css
+/* src/index.css */
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+The `darkMode: 'class'` config key is gone in v4. Dark mode strategy is declared with
+`@custom-variant dark` in CSS. The `@tailwindcss/vite` plugin picks it up automatically —
+no JS config file changes needed.
+
+### Current State in This Codebase
+
+`src/index.css` already has:
+```css
+@custom-variant dark (&:is(.dark *));
+```
+
+This works but uses `:is()` instead of the official recommended `:where()`. The
+difference is specificity: `:is()` inherits specificity from its most specific argument,
+while `:where()` has zero specificity. For utility-first CSS `:where()` is preferred
+to avoid specificity conflicts. The existing `:is(.dark *)` variant will work correctly
+for dark mode — changing it to `:where(.dark, .dark *)` is low risk and matches the
+official recommendation.
+
+The `.dark` CSS class block is already defined in `src/index.css` (lines 85–117) with
+OKLCH dark mode token values for all shadcn/ui components. No CSS changes are needed
+to add dark mode — the styles are already there. The gap is the toggle mechanism.
+
+### Implementation Pattern: Class Toggle + localStorage
+
+Toggle the `.dark` class on `<html>`. Persist the preference in `localStorage` (not
+FSA/idb — theme is device-local UI state, not financial data).
+
+**Three-state logic (light / dark / system):**
+```typescript
+// lib/theme.ts — pure module, no React dependency
+export type ThemePreference = 'light' | 'dark' | 'system';
+
+export function applyTheme(pref: ThemePreference): void {
+  const isDark =
+    pref === 'dark' ||
+    (pref === 'system' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.classList.toggle('dark', isDark);
+}
+
+export function getStoredTheme(): ThemePreference {
+  return (localStorage.getItem('theme') as ThemePreference) ?? 'system';
+}
+
+export function setStoredTheme(pref: ThemePreference): void {
+  localStorage.setItem('theme', pref);
+  applyTheme(pref);
+}
+```
+
+**No-flash initialization in `index.html` `<head>`:**
+```html
+<script>
+  (function () {
+    var pref = localStorage.getItem('theme') || 'system';
+    var isDark =
+      pref === 'dark' ||
+      (pref === 'system' &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (isDark) document.documentElement.classList.add('dark');
+  })();
+</script>
+```
+
+This inline script runs synchronously before React hydrates, preventing flash of
+wrong theme. Must be in `<head>` before any CSS loads.
+
+**Zustand store addition** (no separate store needed — add to existing settingsStore
+or create a tiny uiStore):
+```typescript
+// Option A: tiny dedicated uiStore (preferred — keeps theme orthogonal to financial settings)
+interface UiState {
+  theme: ThemePreference;
+  setTheme: (pref: ThemePreference) => void;
+}
+
+const useUiStore = create<UiState>()((set) => ({
+  theme: getStoredTheme(),
+  setTheme: (pref) => {
+    setStoredTheme(pref);  // writes localStorage + updates <html> class
+    set({ theme: pref });
+  },
+}));
+```
+
+**Why localStorage, not FSA/idb?**
+Theme is device-local UI preference, not financial data. It should survive independently
+of the FSA directory picker workflow. localStorage is appropriate for UI preferences
+and avoids the async complexity of idb reads before first render (which causes flash
+of wrong theme). The no-flash `<head>` script already reads from localStorage directly.
+
+### shadcn/ui dark: variant usage
+
+All shadcn/ui components already use `dark:` Tailwind variants internally. The `.dark`
+class on `<html>` activates them. No component changes needed — adding `.dark` to
+`<html>` is the only integration point.
+
+---
+
+## Feature Area 2: Merchant-to-Bucket Label Persistence
+
+### What needs persisting
+
+A map of merchant names/patterns to bucket IDs: `{ "Netflix": "fun", "AH": "everyday" }`.
+This survives across CSV imports so the user is not re-asked about the same merchants.
+
+### Recommended Approach: FSA JSON file (same pattern as all other app data)
+
+Write a `labels.json` file using the existing `storage.write()` / `storage.read()`
+interface. This is the correct approach because:
+
+1. It follows the existing store pattern exactly (see `accountStore.ts`, `settingsStore.ts`)
+2. It is included in FSA directory backups alongside financial data
+3. No new library needed — `idb` + `storage.ts` already handle the persistence contract
+4. Human-readable JSON in the user's chosen directory
+
+```typescript
+// types/domain.ts addition
+export interface MerchantLabel {
+  merchantPattern: string;   // exact match or lowercase normalized
+  bucketId: string;          // matches FloorItem.id or overflow ratio key
+  bucketName: string;        // human-readable, stored for display without lookup
+  confirmedAt: string;       // ISO date — for debugging stale labels
+}
+
+// types/persistence.ts addition
+export type PersistedMerchantLabels = MerchantLabel[];
+
+// stores/merchantLabelStore.ts — follows exact pattern of accountStore.ts
+const useMerchantLabelStore = create<MerchantLabelState>()((set, get) => ({
+  initialized: false,
+  labels: [],
+  loadLabels: async () => {
+    const data = await storage.read<PersistedMerchantLabels>('labels') ?? [];
+    set({ labels: data, initialized: true });
+  },
+  addLabel: async (label: MerchantLabel) => {
+    const updated = [...get().labels.filter(l =>
+      l.merchantPattern !== label.merchantPattern), label];
+    set({ labels: updated });
+    await storage.write<PersistedMerchantLabels>('labels', updated);
+  },
+}));
+```
+
+**Why not a separate idb object store?**
+The existing `IdbDriver` uses a single `app-data` object store with string keys. The
+FSA driver writes named JSON files. Both work identically behind `storage.write('labels', data)`.
+No schema migration, no new object store — just a new key. This is the established pattern.
+
+**Why not localStorage?**
+Labels are financial/operational data (merchant memory), not UI state. They belong with
+the rest of the app's data in the FSA directory, not in browser storage that doesn't
+travel with file exports.
+
+**Merchant matching strategy (runtime, no library):**
+```typescript
+function findMatchingLabel(
+  description: string,
+  labels: MerchantLabel[]
+): MerchantLabel | undefined {
+  const normalized = description.toLowerCase();
+  return labels.find(l => normalized.includes(l.merchantPattern.toLowerCase()));
+}
+```
+
+Exact contains-match on normalized strings is sufficient for v1.1. Full fuzzy matching
+(Fuse.js etc.) is not needed and would add a new dependency.
+
+---
+
+## Feature Area 3: History Search/Filter
+
+### What needs filtering
+
+`AllocationRecord[]` from `allocationStore.history`. Fields available for filtering:
+- `date: string` (ISO date — range filter)
+- `invoiceAmountCents: number` (amount filter)
+- `invoiceCurrency: string`
+- `mode: 'stabilize' | 'distribute'`
+- `moves[].reason` (text search)
+- `clientName?: string` (new field from v1.1 invoice source tracking)
+
+### Recommended Pattern: useMemo filter in component, no library
+
+```typescript
+// In HistoryPage.tsx — add filter state + useMemo derived list
+const [searchQuery, setSearchQuery] = useState('');
+const [dateFrom, setDateFrom] = useState('');
+const [dateTo, setDateTo] = useState('');
+
+const filteredHistory = useMemo(() => {
+  return history.filter(record => {
+    if (dateFrom && record.date < dateFrom) return false;
+    if (dateTo && record.date > dateTo) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchesClient = record.clientName?.toLowerCase().includes(q);
+      const matchesMoves = record.moves.some(m => m.reason.toLowerCase().includes(q));
+      if (!matchesClient && !matchesMoves) return false;
+    }
+    return true;
+  });
+}, [history, searchQuery, dateFrom, dateTo]);
+```
+
+**Why useMemo is correct here:**
+- History list is bounded (personal app — hundreds of records, not millions)
+- Filter is synchronous, no I/O, runs in <1ms for realistic data sizes
+- React Compiler (enabled by default in React 19 with Vite + babel plugin) auto-memoizes
+  this pattern — the explicit useMemo is insurance, not a performance critical decision
+- No library (lunr, Fuse.js, minisearch) needed for simple substring + date-range filter
+
+**Date input component:** Use shadcn/ui `Input` with `type="date"` — no date picker
+library needed. Native `<input type="date">` provides adequate UX for a personal app
+and avoids a 20–40kB calendar widget dependency.
+
+**Amount filter (optional):** Filter by `invoiceAmountCents >= minAmount && <= maxAmount`
+using parseCents() on user input — consistent with existing money math pattern.
+
+### What NOT to add
+
+| Avoid | Why |
+|-------|-----|
+| Fuse.js | Fuzzy search is overkill for a personal history log |
+| lunr.js | Full-text indexing is overkill for <1000 records |
+| TanStack Table | Virtualization and column sorting not needed for personal data volumes |
+| react-datepicker | Native `<input type="date">` sufficient; avoids 30kB dependency |
+
+---
+
+## Feature Area 4: AI Transaction Q&A — Streaming vs Batch
+
+### The UX requirement
+
+The AI asks about uncertain transactions one at a time. User provides context + bucket
+assignment. The conversation is a multi-turn exchange within a single CSV import session.
+Labels are persisted after confirmation.
+
+### Recommendation: Streaming for conversational turns, batch for initial analysis
+
+**Initial CSV analysis (existing pattern):** Keep batch (non-streaming). The current
+`callAnthropicAPI()` in `anthropicClient.ts` uses structured JSON output (`output_config`
+with `json_schema`). Structured outputs are NOT compatible with streaming — the API
+requires the full response to validate the JSON schema. Keep this as-is.
+
+**Q&A conversational turns:** Use streaming (`stream: true`) with raw fetch and
+`ReadableStream`. This gives the "AI is typing" feel that makes Q&A feel interactive
+rather than making the user wait for a batched response.
+
+### Streaming implementation pattern (raw fetch, no SDK)
+
+The existing codebase uses raw `fetch` (not the `@anthropic-ai/sdk` npm package).
+Continue this pattern — adding `@anthropic-ai/sdk` for streaming would add ~100kB and
+introduce a new dependency.
+
+```typescript
+// lib/anthropicStreaming.ts
+export async function* streamAnthropicMessage(
+  apiKey: string,
+  messages: Array<{ role: 'user' | 'assistant'; content: string }>,
+): AsyncGenerator<string> {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',  // keep consistent with existing client
+      max_tokens: 512,   // Q&A turns are short
+      stream: true,
+      messages,
+    }),
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({})) as { error?: { type?: string } };
+    throw new AnthropicAPIError(response.status, body?.error?.type ?? 'unknown_error');
+  }
+
+  const reader = response.body!.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() ?? '';
+
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue;
+      const data = line.slice(6).trim();
+      if (data === '[DONE]') return;
+      try {
+        const event = JSON.parse(data) as {
+          type: string;
+          delta?: { type: string; text?: string };
+        };
+        if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+          yield event.delta.text ?? '';
+        }
+      } catch {
+        // malformed SSE line — skip
+      }
+    }
+  }
+}
+```
+
+**React consumption pattern:**
+```typescript
+// In the Q&A component
+const [streamedText, setStreamedText] = useState('');
+const [isStreaming, setIsStreaming] = useState(false);
+
+async function askQuestion(question: string) {
+  setIsStreaming(true);
+  setStreamedText('');
+  for await (const chunk of streamAnthropicMessage(apiKey, [...conversationHistory, { role: 'user', content: question }])) {
+    setStreamedText(prev => prev + chunk);
+  }
+  setIsStreaming(false);
+}
+```
+
+### Multi-turn conversation state management
+
+The API is stateless — send the full conversation history on every turn.
+
+```typescript
+// Conversation state: kept in React component state, NOT persisted (session-only)
+type ConversationMessage = { role: 'user' | 'assistant'; content: string };
+const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);
+```
+
+Conversation history lives in component state only — it is ephemeral within a single
+CSV import session. Only the confirmed merchant→bucket labels are persisted (to `labels.json`
+via `merchantLabelStore`). Do NOT persist conversation history to FSA or idb.
+
+### When to use structured output (batch) vs streaming
+
+| Use Case | Method | Why |
+|----------|--------|-----|
+| Initial CSV bucket-split analysis | Batch + `output_config.json_schema` | Structured JSON output requires batch; validates response shape |
+| Floor item detection from CSV | Batch + `output_config.json_schema` | Same — structured output for pre-fill form data |
+| Transaction Q&A conversational turns | Streaming + `stream: true` | Conversational UX; free-text responses don't need schema validation |
+| Multi-turn refinement questions | Streaming + `stream: true` | Same |
+
+**SSE event flow for streaming (verified against official docs):**
+1. `message_start` — ignore for text extraction
+2. `content_block_start` — ignore
+3. `content_block_delta` with `delta.type === 'text_delta'` — extract `delta.text`, yield it
+4. `content_block_stop` — ignore
+5. `message_delta` — contains usage stats, ignore for text extraction
+6. `message_stop` — end of stream
+
+**Note on EventSource:** The browser `EventSource` API cannot be used for Anthropic
+streaming because `EventSource` only supports GET requests. Use `fetch` + `ReadableStream`
+as shown above.
+
+---
+
+## No-Change Decisions
+
+These stack choices from v1.0 are explicitly confirmed unchanged for v1.1:
+
+| Item | v1.0 Decision | v1.1 Status |
+|------|--------------|-------------|
+| Integer cents | All money as `number` (cents) | Unchanged — invoice "from" field is a string, no money math change |
+| FSA + idb storage pattern | `storage.write()` / `storage.read()` | Unchanged — labels.json follows same pattern |
+| Anthropic API key in localStorage | User-provided, stored in `localStorage` | Unchanged |
+| Anthropic model | `claude-haiku-4-5-20251001` | Unchanged — use same model for Q&A turns |
+| No React Router | State-driven view rendering | Unchanged |
+| No TanStack Query | No server state | Unchanged |
+| Papa.parse | CSV parsing | Unchanged |
+| Zustand 5 `useShallow` for object selectors | Required in Zustand 5 | Unchanged |
 
 ---
 
 ## Installation
 
+No new packages needed for v1.1. All four feature areas are achievable with the
+existing dependency set.
+
 ```bash
-# 1. Scaffold project (Vite 7 + React 19 + TypeScript template)
-npm create vite@latest money-flow -- --template react-ts
-cd money-flow
-npm install
-
-# 2. Tailwind v4 + Vite plugin
-npm install tailwindcss @tailwindcss/vite
-# No tailwind.config.js needed — CSS-first from here
-
-# 3. shadcn/ui init (latest supports Tailwind v4 + React 19)
-npx shadcn@latest init
-# Select: New York style, OKLCH colors, leave Tailwind config path blank
-
-# 4. shadcn animation dependency (tw-animate-css replaces tailwindcss-animate)
-npm install tw-animate-css
-
-# 5. State management
-npm install zustand
-
-# 6. IndexedDB wrapper
-npm install idb
-
-# 7. Icons (shadcn dependency)
-npm install lucide-react
-
-# Dev dependencies (testing)
-npm install -D vitest @testing-library/react @testing-library/user-event @testing-library/jest-dom jsdom
-```
-
-### vite.config.ts (critical Tailwind v4 integration)
-
-```typescript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-import path from 'path'
-
-export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),  // First-party Vite plugin — do NOT use PostCSS config
-  ],
-  resolve: {
-    alias: { '@': path.resolve(__dirname, './src') },
-  },
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/test/setup.ts',
-  },
-})
-```
-
-### src/index.css (Tailwind v4 CSS-first)
-
-```css
-@import "tailwindcss";
-@import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
-  /* shadcn/ui New York OKLCH tokens injected here by npx shadcn init */
-  --color-background: oklch(1 0 0);
-  --color-foreground: oklch(0.145 0 0);
-  /* ... full OKLCH palette from shadcn init output ... */
-}
-```
-
-### components.json (shadcn — Tailwind v4 mode)
-
-```json
-{
-  "style": "new-york",
-  "rsc": false,
-  "tsx": true,
-  "tailwind": {
-    "config": "",
-    "css": "src/index.css",
-    "baseColor": "zinc",
-    "cssVariables": true,
-    "prefix": ""
-  },
-  "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils"
-  }
-}
-```
-
-Note: `"config": ""` is required for Tailwind v4. Any non-empty value causes shadcn CLI to look for a JS config file that does not exist, breaking `npx shadcn add [component]`.
-
-### tsconfig.app.json (path alias for shadcn)
-
-```json
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"] }
-  }
-}
+# Verify: no new deps needed
+# dark mode: @custom-variant already in index.css, localStorage built-in
+# label persistence: storage.ts pattern, idb already installed
+# history filter: useMemo, no library
+# AI streaming: raw fetch, no SDK
 ```
 
 ---
 
 ## Alternatives Considered
 
-| Recommended | Alternative | When to Use Alternative |
-|-------------|-------------|-------------------------|
-| Vite 7 | Next.js App Router | If SSR or server components were needed. Not applicable — app is fully client-side local-first. |
-| Tailwind v4 | Tailwind v3 | Only for existing v3 codebases. Greenfield projects should always use v4. |
-| shadcn/ui New York | shadcn/ui Default style | Default style is deprecated — New York is the new standard. There is no meaningful reason to use Default on a new project. |
-| Zustand 5 (no persist) | Zustand 5 + persist middleware | Use persist only if you have no custom persistence layer. Here, FSA + idb IS the persistence layer; persist middleware creates a redundant second source of truth and doubles storage writes. |
-| Zustand 5 | Jotai | Jotai is fine but the atomic model adds unnecessary complexity for this app's data shape (flat stores per domain). |
-| Zustand 5 | Redux Toolkit | Excessive boilerplate for a single-user local app with no async side-effects needing middleware. |
-| idb 8 | idb-keyval | idb-keyval (simpler key-value API) is sufficient only for simple key-value storage. Use full `idb` because this app needs multiple typed object stores (budgets, accounts, history, handles). |
-| File System Access API | localStorage | localStorage has 5MB limit and provides no file export story. FSA writes unlimited human-readable JSON directly to the user's disk. Use localStorage only as a fallback when FSA is unavailable. |
-| Vitest 4 | Jest | Jest requires separate bundler config, slower startup, no native Vite integration. Vitest reuses vite.config.ts entirely and is significantly faster. |
-| @testing-library/react 16 | Enzyme | Enzyme is unmaintained for React 19. Do not use. |
-| jsdom | happy-dom | Either works. jsdom is more complete and battle-tested. |
-| @vitejs/plugin-react (Babel) | @vitejs/plugin-react-swc | SWC is faster in dev but has occasional edge-case incompatibilities with Babel transforms some shadcn components rely on. Speed difference is negligible for this app size. |
+| Recommended | Alternative | Why Not |
+|-------------|-------------|---------|
+| Raw fetch + ReadableStream for streaming | `@anthropic-ai/sdk` npm package | Adds ~100kB bundle; existing code uses raw fetch successfully; SDK has no browser-specific streaming advantage over the raw pattern |
+| localStorage for theme preference | FSA/idb for theme preference | Theme is UI state, not financial data; idb reads are async and cause flash of wrong theme before React mounts; inline `<head>` script requires synchronous localStorage access |
+| useMemo + Array.filter for history | Fuse.js / lunr / minisearch | Personal app data volumes (<1000 records); fuzzy search overhead not justified; adds 10–50kB |
+| `storage.write('labels', ...)` via existing StorageDriver | New idb object store | Existing single-store pattern works; no schema migration needed; labels travel with other FSA data |
+| `:where(.dark, .dark *)` selector | `:is(.dark *)` (current in codebase) | `:where()` has zero specificity per official docs recommendation; reduces risk of specificity conflicts with custom styles |
+| Native `<input type="date">` for date filter | react-datepicker / shadcn Calendar | Calendar widget adds 20–40kB; native input sufficient for personal app; shadcn DatePicker is complex to wire for range selection |
 
 ---
 
-## What NOT to Use
+## Version Compatibility Notes (v1.1 specific)
 
-| Avoid | Why | Use Instead |
-|-------|-----|-------------|
-| `tailwindcss-animate` | Deprecated in shadcn/ui Tailwind v4 path. Using both causes duplicate animation definitions and class conflicts. | `tw-animate-css` |
-| `tailwind.config.js` | Not auto-detected in Tailwind v4. Must be explicitly loaded via `@config` if used. In Tailwind v4 + shadcn: use `@theme` directive in CSS only. | `@theme` block in `index.css` |
-| Zustand `persist` middleware | Creates a second source of truth alongside FSA. Stale localStorage data can override fresh FSA data on hydration, causing subtle state corruption bugs. | FSA writes in store mutation callbacks; idb for FSA handle storage |
-| Individual `@radix-ui/react-*` packages | shadcn/ui New York with Tailwind v4 switched to unified `radix-ui` package. Installing individual packages causes version conflicts. | Let `npx shadcn add [component]` manage Radix imports automatically |
-| Create React App (CRA) | Unmaintained since 2022, webpack-based, no Vite integration, incompatible with modern toolchain. | `npm create vite@latest -- --template react-ts` |
-| Floating point for money math | `0.1 + 0.2 === 0.30000000000000004`. Any financial calculation using JS floats produces wrong results. | Integer cents throughout: `parseCents(input)` converts input to integer; all arithmetic in cents; `formatCents(amount)` for display |
-| React Router | This app has no multi-page routing. Adding React Router for view switching adds unnecessary complexity. | State-driven view rendering via Zustand (e.g., `activeView` state) |
-| TanStack Query | No server state to manage. TanStack Query is designed for server data caching/refetching. Overkill for a fully local app. | Direct FSA reads in useEffect; Zustand for in-memory state |
-
----
-
-## Stack Patterns by Variant
-
-**This is a pure client-side local-first app (no server, no auth, no routing):**
-- No React Query / TanStack Query
-- No React Router
-- No tRPC / fetch wrappers
-- Zod: optional — useful for validating CSV import data shape; add only if CSV parsing logic warrants schema validation
-
-**For AI CSV analysis:**
-- Client-side `fetch` call to an LLM API (Anthropic, OpenAI, etc.)
-- User provides API key (stored in idb or sessionStorage — never hardcoded or committed)
-- No AI SDK required; raw `fetch` to API endpoint is sufficient for this use case
-
-**For money math (all stores and calculations):**
-- Parse: `const cents = Math.round(parseFloat(input) * 100)`
-- Store: always as integer cents
-- Arithmetic: all operations in cents (no float intermediates)
-- Display: `(cents / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })`
-
----
-
-## Version Compatibility
-
-| Package | Compatible With | Notes |
-|---------|-----------------|-------|
-| Vite 7.3.x | Node.js 20.19+ or 22.12+ | Node 18 dropped at Vite 7. Verify before scaffolding. |
-| Vitest 4.x | Vite 7.x | Min Vitest 3.2 for Vite 7; v4 fully supported. |
-| React 19.2.x | Zustand 5.0.11 | Zustand 5 requires React 18+; React 19 fully compatible. |
-| tailwindcss 4.2.x | @tailwindcss/vite 4.2.x | Must stay in sync — same major.minor version. |
-| shadcn/ui (latest CLI) | Tailwind 4.x + React 19 | shadcn February 2025 update fully supports Tailwind v4 + React 19. New York is now the default style. |
-| @testing-library/react 16.x | React 19.x | React 19 support requires @testing-library/react v16+. v14 and v15 do not support React 19. |
-| idb 8.x | All modern browsers | Targets Chrome 86+, Firefox, Safari. Aligns with FSA browser support requirements. |
-| @vitejs/plugin-react 4.x | Vite 7.x | Compatible. No version conflicts expected. |
-
----
-
-## Setup / Config Gotchas for This Specific Stack
-
-### Gotcha 1: Tailwind v4 + Vite — Use the Plugin, Not PostCSS
-
-**Wrong:** Adding `tailwindcss` to `postcss.config.js`
-**Right:** Import `tailwindcss` from `@tailwindcss/vite` and add to `plugins[]` in `vite.config.ts`
-
-Mixing PostCSS config with the Vite plugin causes double-processing and broken builds. Delete any `postcss.config.js` file when migrating.
-
-### Gotcha 2: shadcn New York + Tailwind v4 — `"config": ""` is Intentional
-
-Leaving `tailwind.config` blank in `components.json` is required for Tailwind v4. The shadcn CLI uses CSS-based detection. Any non-empty value causes the CLI to look for a JS config that does not exist, breaking `npx shadcn add [component]` with a cryptic error.
-
-### Gotcha 3: Zustand 5 — `useShallow` Required for Object Selectors
-
-In Zustand v5, if a selector returns a new object reference on every call, it triggers an infinite render loop via `useSyncExternalStore`.
-
-```typescript
-// WRONG — creates new object reference every render → infinite loop in Zustand 5
-const { buckets, accounts } = useBudgetStore(state => ({
-  buckets: state.buckets,
-  accounts: state.accounts,
-}))
-
-// RIGHT — useShallow gives stable reference
-import { useShallow } from 'zustand/shallow'
-const { buckets, accounts } = useBudgetStore(
-  useShallow(state => ({ buckets: state.buckets, accounts: state.accounts }))
-)
-```
-
-Do NOT compute derived values inside `useShallow` selectors (e.g., `.map()` calls). Extract raw state first, then compute outside the selector.
-
-### Gotcha 4: FSA + idb — Two Separate Concerns, One Pattern
-
-idb stores the `FileSystemDirectoryHandle` (serializable via structured clone). FSA uses that handle to read/write JSON files. They do not conflict.
-
-```typescript
-// On app start: retrieve handle from idb, verify permission
-const savedHandle = await db.get('handles', 'workDir')
-if (savedHandle) {
-  const perm = await savedHandle.queryPermission({ mode: 'readwrite' })
-  if (perm !== 'granted') {
-    await savedHandle.requestPermission({ mode: 'readwrite' })
-  }
-  // Now use handle to read app data
-}
-
-// When user picks directory: save handle to idb
-const handle = await window.showDirectoryPicker()
-await db.put('handles', handle, 'workDir')
-```
-
-Permission check is mandatory on every session start — permissions are NOT guaranteed to persist without the Chrome 122+ persistent permission prompt.
-
-### Gotcha 5: Zustand Without Persist — Hydration Pattern
-
-Zustand holds runtime state only. On mount, load from FSA into Zustand. On mutations, write back to FSA.
-
-```typescript
-// In a top-level component useEffect or a dedicated hydration hook
-useEffect(() => {
-  async function hydrate() {
-    const data = await readFromFSA('accounts.json')
-    useAccountStore.getState().setAccounts(data)
-  }
-  hydrate()
-}, [])
-
-// In Zustand store — write-through on every mutation
-const useAccountStore = create<AccountState>((set) => ({
-  accounts: [],
-  setAccounts: (accounts) => {
-    set({ accounts })
-    writeToFSA('accounts.json', accounts)  // fire-and-forget or with error handling
-  },
-}))
-```
-
-### Gotcha 6: Vitest 4 — `basic` Reporter Removed
-
-```typescript
-// OLD (breaks in Vitest 4)
-reporters: ['basic']
-
-// NEW
-reporters: ['default']
-```
-
-### Gotcha 7: `tw-animate-css` Not Found After `npx shadcn add`
-
-If `npx shadcn add [component]` fails with a missing `tw-animate-css` import error:
-
-```bash
-npm install tw-animate-css
-```
-
-Then in `src/index.css`:
-```css
-@import "tailwindcss";
-@import "tw-animate-css";   // Add this line
-```
-
-### Gotcha 8: Node.js Version Check Before `npm create vite@latest`
-
-Vite 7 requires Node 20.19+ or 22.12+. Running scaffold on Node 18 installs successfully but fails at build time with cryptic ESM errors.
-
-```bash
-node --version  # Must be 20.19+ or 22.12+
-```
+| Concern | Verdict | Notes |
+|---------|---------|-------|
+| Tailwind v4 `@custom-variant dark` + existing `.dark {}` block | Compatible | `.dark {}` in CSS works with both class strategies; no change needed |
+| `stream: true` Anthropic API + `anthropic-dangerous-direct-browser-access` header | Verified compatible | CORS header applies to streaming requests identically to batch requests |
+| `ReadableStream` browser support | High — all modern browsers | Chrome 43+, Firefox 65+, Safari 10.1+. App already requires Chrome (FSA), so no concern |
+| `TextDecoder` with `{ stream: true }` option | Supported in all target browsers | Required for correct multi-byte UTF-8 handling in streaming; native browser API |
 
 ---
 
 ## Sources
 
-- [Vite 7.0 announcement](https://vite.dev/blog/announcing-vite7) — Node requirement, baseline-widely-available target, ESM-only, breaking changes **[HIGH confidence — official blog]**
-- [Vite GitHub releases](https://github.com/vitejs/vite/releases) — version 7.3.1 confirmed current **[HIGH confidence]**
-- [React 19.2 blog post](https://react.dev/blog/2025/10/01/react-19-2) — feature list, version 19.2.4 **[HIGH confidence — official]**
-- [Tailwind CSS v4.0 announcement](https://tailwindcss.com/blog/tailwindcss-v4) — CSS-first, @theme directive, Vite plugin **[HIGH confidence — official]**
-- [@tailwindcss/vite npm](https://www.npmjs.com/package/@tailwindcss/vite) — version 4.2.1 **[HIGH confidence]**
-- [shadcn/ui Tailwind v4 docs](https://ui.shadcn.com/docs/tailwind-v4) — New York default, OKLCH, tw-animate-css, components.json config:"" **[HIGH confidence — official docs]**
-- [shadcn/ui changelog February 2025](https://ui.shadcn.com/docs/changelog/2025-02-tailwind-v4) — Tailwind v4 + React 19 support shipped **[HIGH confidence]**
-- [tw-animate-css GitHub](https://github.com/Wombosvideo/tw-animate-css) — replacement for tailwindcss-animate **[HIGH confidence]**
-- [Zustand v5 migration guide](https://zustand.docs.pmnd.rs/migrations/migrating-to-v5) — breaking changes, persist behavioral change, useShallow requirement **[HIGH confidence — official docs]**
-- [Announcing Zustand v5](https://pmnd.rs/blog/announcing-zustand-v5) — version 5.0.11, React 19 compatible **[HIGH confidence]**
-- [Vitest 4.0 announcement](https://vitest.dev/blog/vitest-4) — stable browser mode, visual regression, basic reporter removed **[HIGH confidence — official]**
-- [Vitest 4.0 VoidZero post](https://voidzero.dev/posts/announcing-vitest-4) — Vite 7 support from Vitest 3.2 **[HIGH confidence]**
-- [idb GitHub](https://github.com/jakearchibald/idb) — version 8.0.3, FSA handle serialization **[HIGH confidence]**
-- [FSA persistent permissions Chrome 122](https://developer.chrome.com/blog/persistent-permissions-for-the-file-system-access-api) — queryPermission() pattern, three-way prompt **[HIGH confidence — official Chrome docs]**
-- [FSA + idb handle storage pattern](https://www.xjavascript.com/blog/file-system-access-api-is-it-possible-to-store-the-filehandle-of-a-saved-or-loaded-file-for-later-use/) — structured clone algorithm, idb integration **[MEDIUM confidence — community verified against MDN]**
+- [Tailwind CSS v4 Dark Mode official docs](https://tailwindcss.com/docs/dark-mode) — `@custom-variant` syntax, `:where()` recommendation, three-state localStorage pattern **[HIGH confidence — official docs]**
+- [Anthropic Messages Streaming API docs](https://platform.claude.com/docs/en/api/messages-streaming) — SSE event flow, `stream: true`, browser fetch pattern, EventSource limitation **[HIGH confidence — official docs]**
+- [Anthropic Messages API reference](https://docs.anthropic.com/en/api/messages) — multi-turn messages array, API statefulness model **[HIGH confidence — official docs]**
+- Codebase inspection `src/index.css` — confirmed `.dark {}` OKLCH token block already present, `@custom-variant dark (&:is(.dark *))` already declared **[HIGH confidence — direct read]**
+- Codebase inspection `src/lib/storage/storage.ts`, `src/lib/storage/idbDriver.ts` — confirmed single-store pattern, `storage.write(key, data)` interface **[HIGH confidence — direct read]**
+- Codebase inspection `src/lib/anthropicClient.ts` — confirmed raw fetch pattern, `output_config.json_schema` structured output, model `claude-haiku-4-5-20251001` **[HIGH confidence — direct read]**
+- Codebase inspection `src/stores/allocationStore.ts`, `src/types/domain.ts` — confirmed `AllocationRecord` shape, history array structure for filter design **[HIGH confidence — direct read]**
+- React `useMemo` official docs — memoized derived list pattern **[HIGH confidence — official docs]**
 
 ---
 
-*Stack research for: local-first browser app — freelance budget allocator (Money Flow)*
-*Researched: 2026-02-27*
+*Stack research for: Money Flow v1.1 — AI Q&A, label persistence, history filter, dark mode toggle*
+*Researched: 2026-02-28*
