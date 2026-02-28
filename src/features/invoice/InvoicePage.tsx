@@ -17,6 +17,7 @@ type PageState =
       invoiceAmountCents: number;
       invoiceCurrency: string;
       invoiceEurEquivalentCents: number;
+      source: string;
     };
 
 export function InvoicePage() {
@@ -37,6 +38,7 @@ export function InvoicePage() {
     amountCents: number;
     currency: string;
     eurEquivalentCents: number;
+    source: string;
   }) => {
     const today = new Date().toISOString().slice(0, 10);
     const result = computeAllocation(
@@ -51,6 +53,7 @@ export function InvoicePage() {
       invoiceAmountCents: data.amountCents,
       invoiceCurrency: data.currency,
       invoiceEurEquivalentCents: data.eurEquivalentCents,
+      source: data.source,
     });
   };
 
@@ -85,6 +88,7 @@ export function InvoicePage() {
       invoiceEurEquivalentCents: state.invoiceEurEquivalentCents,
       mode: state.result.mode,
       moves: state.result.moves,
+      source: state.source,
     };
 
     // 4. Commit everything — setAccounts writes to storage atomically

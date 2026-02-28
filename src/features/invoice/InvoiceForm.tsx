@@ -8,6 +8,7 @@ interface InvoiceFormProps {
     amountCents: number;
     currency: string;
     eurEquivalentCents: number;
+    source: string;
   }) => void;
 }
 
@@ -15,6 +16,7 @@ export function InvoiceForm({ onSubmit }: InvoiceFormProps) {
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState('');
   const [eurEquivalent, setEurEquivalent] = useState('');
+  const [source, setSource] = useState('');
 
   const [errors, setErrors] = useState({
     amount: false,
@@ -43,11 +45,13 @@ export function InvoiceForm({ onSubmit }: InvoiceFormProps) {
       amountCents,
       currency: currency.trim(),
       eurEquivalentCents,
+      source: source.trim(),
     });
 
     setAmount('');
     setCurrency('');
     setEurEquivalent('');
+    setSource('');
     setErrors({ amount: false, currency: false, eurEquivalent: false });
   };
 
@@ -102,6 +106,19 @@ export function InvoiceForm({ onSubmit }: InvoiceFormProps) {
         {errors.eurEquivalent && (
           <p className="text-sm text-destructive">EUR equivalent is required.</p>
         )}
+      </div>
+
+      <div className="space-y-1.5">
+        <label htmlFor="source" className="block text-sm font-medium text-foreground">
+          From <span className="text-muted-foreground font-normal">(optional)</span>
+        </label>
+        <Input
+          id="source"
+          type="text"
+          placeholder="Client or project name"
+          value={source}
+          onChange={e => setSource(e.target.value)}
+        />
       </div>
 
       <Button type="submit" className="w-full">
