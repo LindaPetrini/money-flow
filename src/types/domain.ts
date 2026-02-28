@@ -31,6 +31,7 @@ export interface Settings {
   bufferTargetCents: number;
   overflowRatios: OverflowRatio[];
   floorItems: FloorItem[];
+  theme?: 'light' | 'dark' | 'system';  // undefined treated as 'system'
 }
 
 export interface AllocationMove {
@@ -50,4 +51,11 @@ export interface AllocationRecord {
   invoiceEurEquivalentCents: number;
   mode: 'stabilize' | 'distribute';
   moves: AllocationMove[];
+  source?: string;        // client/project name; '' for pre-v1.1 records after migration
+}
+
+export interface MerchantEntry {
+  merchantName: string;    // canonical name from CSV; used as lookup key (case-preserved)
+  bucketAccountId: string; // which account/bucket this merchant maps to
+  context?: string;        // user-provided context note from last Q&A session
 }
