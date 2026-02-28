@@ -131,6 +131,16 @@ None - no external service configuration required.
 - Build passes, 114 tests green, no regressions
 - Phase 7 (Hardening) is ready to begin
 
+## Self-Check: PASSED
+
+- src/features/settings/CsvAiSection.tsx: FOUND
+- src/features/settings/SettingsPage.tsx: FOUND
+- .planning/phases/06-csv-import-ai-analysis/06-03-SUMMARY.md: FOUND
+- Commit 2f1160d (feat: suggestion cards): FOUND
+- Commit c8f0417 (docs: plan metadata): FOUND
+- npm run build: PASSED (0 TypeScript errors)
+- npm test: PASSED (114/114 tests green)
+
 ---
 *Phase: 06-csv-import-ai-analysis*
 *Completed: 2026-02-28*
