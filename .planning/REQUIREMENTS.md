@@ -42,7 +42,7 @@
 
 ### Configuration (CONFIG)
 
-- [ ] **CONFIG-01**: User can configure accounts (name, target balance, role: income-hub / spending / savings / tax / investing)
+- [x] **CONFIG-01**: User can configure accounts (name, target balance, role: income-hub / spending / savings / tax / investing)
 - [ ] **CONFIG-02**: User can configure floor items (name, amount in cents, priority order, destination account)
 - [ ] **CONFIG-03**: Floor items support optional expiry dates — auto-deactivate when expired
 - [ ] **CONFIG-04**: User can configure overflow ratios (percentage split for Distribute mode across non-floor accounts)
@@ -128,7 +128,7 @@
 | DASH-02 | Phase 3 | Pending |
 | DASH-03 | Phase 3 | Pending |
 | DASH-04 | Phase 3 | Pending |
-| CONFIG-01 | Phase 4 | Pending |
+| CONFIG-01 | Phase 4 | Complete |
 | CONFIG-02 | Phase 4 | Pending |
 | CONFIG-03 | Phase 4 | Pending |
 | CONFIG-04 | Phase 4 | Pending |

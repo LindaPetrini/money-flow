@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-28T15:00:28.012Z"
+last_updated: "2026-02-28T15:30:58.432Z"
 progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
+  total_phases: 4
+  completed_phases: 3
+  total_plans: 14
+  completed_plans: 12
 ---
 
 # Project State
@@ -48,6 +48,7 @@ Progress: [████████░░] ~55% (phases 1+2 complete, phase 3 fu
 
 *Updated after each plan completion*
 | Phase 02-allocation-engine P03 | 10 | 2 tasks | 2 files |
+| Phase 04-configuration P02 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,7 @@ Recent decisions affecting current work:
 - [Phase 03-core-ui 03-02]: Status thresholds — at-target >=100%, near-target >=80%, below-target <80% of targetCents
 - [Phase 03-core-ui 03-04]: Plain button-based tab nav over shadcn Tabs — avoids new component dependency for a simple two-state toggle
 - [Phase 03-core-ui 03-04]: Dashboard uses default export; InvoicePage uses named export — App.tsx imports adjusted accordingly
+- [Phase 04-configuration]: targetStr string field in draft avoids float storage mid-edit; parseCents called only on save
 
 ### Pending Todos
 
