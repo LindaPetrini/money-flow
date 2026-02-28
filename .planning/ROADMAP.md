@@ -125,7 +125,9 @@ Plans:
   1. VERIFICATION.md exists in `.planning/phases/03-core-ui/` confirming all 8 requirements
   2. All 8 requirements marked satisfied against their acceptance criteria
   3. No regressions — `npm run build` and `npm test` still pass
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 08-01-PLAN.md — Inspect Phase 3 source files, gather evidence, write 03-VERIFICATION.md, update REQUIREMENTS.md
 
 ### Phase 9: Verify Configuration
 **Goal**: Formally verify that Phase 4 implementation satisfies all Configuration requirements — produce VERIFICATION.md that closes CONFIG-01 through CONFIG-07
@@ -164,6 +166,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. History | 1/1 | Complete   | 2026-02-28 |
 | 6. CSV Import & AI Analysis | 3/3 | Complete   | 2026-02-28 |
 | 7. Hardening | 3/3 | Complete   | 2026-02-28 |
-| 8. Verify Core UI | 0/? | Not started | - |
+| 8. Verify Core UI | 0/1 | Not started | - |
 | 9. Verify Configuration | 0/? | Not started | - |
 | 10. Fix Integration Defects | 0/? | Not started | - |
