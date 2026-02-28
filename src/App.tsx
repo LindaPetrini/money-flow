@@ -6,6 +6,7 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import Dashboard from '@/features/dashboard/Dashboard';
 import { InvoicePage } from '@/features/invoice/InvoicePage';
 import { HistoryPage } from '@/features/history/HistoryPage';
+import { SettingsPage } from '@/features/settings/SettingsPage';
 
 interface AppProps {
   needsFsaPrompt: boolean;
@@ -13,7 +14,7 @@ interface AppProps {
 }
 
 export default function App({ needsFsaPrompt, storageMode }: AppProps) {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'invoice' | 'history'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'invoice' | 'history' | 'settings'>('dashboard');
 
   const handleGrantAccess = async () => {
     if (!fsaDriver) return;
@@ -51,7 +52,7 @@ export default function App({ needsFsaPrompt, storageMode }: AppProps) {
 
       {/* Tab navigation */}
       <nav className="border-b border-border px-4 flex gap-6">
-        {(['dashboard', 'invoice', 'history'] as const).map(tab => (
+        {(['dashboard', 'invoice', 'history', 'settings'] as const).map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -72,6 +73,7 @@ export default function App({ needsFsaPrompt, storageMode }: AppProps) {
         {activeTab === 'dashboard' && <Dashboard />}
         {activeTab === 'invoice' && <InvoicePage />}
         {activeTab === 'history' && <HistoryPage />}
+        {activeTab === 'settings' && <SettingsPage />}
       </main>
     </div>
   );
