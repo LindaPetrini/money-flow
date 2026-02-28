@@ -11,7 +11,18 @@ const DEFAULT_SETTINGS: Settings = {
   bufferTargetCents: 0,
   overflowRatios: [],
   floorItems: [],
+  theme: 'system' as const,
 };
+
+function applyTheme(theme: 'light' | 'dark' | 'system'): void {
+  const root = document.documentElement;
+  const prefersDark =
+    typeof window !== 'undefined' &&
+    window.matchMedia != null &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = theme === 'dark' || (theme === 'system' && prefersDark);
+  root.classList.toggle('dark', isDark);
+}
 
 interface SettingsState {
   initialized: boolean;
@@ -27,12 +38,16 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   loadSettings: async () => {
     const data = await storage.read<PersistedSettings>('settings') ?? DEFAULT_SETTINGS;
     set({ settings: data, initialized: true });
+    applyTheme(data.theme ?? 'system');
   },
 
   updateSettings: async (patch) => {
     if (!get().initialized) return;  // Guard
     const updated = { ...get().settings, ...patch };
     set({ settings: updated });
+    if (patch.theme !== undefined) {
+      applyTheme(updated.theme ?? 'system');
+    }
     try {
       await storage.write<PersistedSettings>('settings', updated);
     } catch (e) {

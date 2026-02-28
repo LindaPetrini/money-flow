@@ -6,6 +6,7 @@ import { bootstrapStorage, type BootstrapResult } from '@/lib/storage/storage';
 import { useAccountStore } from '@/stores/accountStore';
 import { useAllocationStore } from '@/stores/allocationStore';
 import { useSettingsStore } from '@/stores/settingsStore';
+import { useMerchantStore } from '@/stores/merchantStore';
 import { seedIfEmpty } from '@/lib/bootstrap';
 import { StorageErrorProvider } from '@/lib/storage/StorageErrorContext';
 
@@ -17,6 +18,7 @@ async function init() {
     useAccountStore.getState().loadAccounts(),
     useAllocationStore.getState().loadHistory(),
     useSettingsStore.getState().loadSettings(),
+    useMerchantStore.getState().loadMerchants(),
   ]);
   await seedIfEmpty();
 
