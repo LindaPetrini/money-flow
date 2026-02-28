@@ -13,7 +13,7 @@ Money Flow is a local-first freelance finance allocator. The build sequence foll
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Foundation** - Project scaffold + persistence layer + integer cents arithmetic
-- [ ] **Phase 2: Allocation Engine** - Pure TypeScript domain logic (Stabilize/Distribute modes) with full test coverage
+- [x] **Phase 2: Allocation Engine** - Pure TypeScript domain logic (Stabilize/Distribute modes) with full test coverage (completed 2026-02-28)
 - [ ] **Phase 3: Core UI** - Dashboard + invoice entry workflow + allocation result view + Done confirmation
 - [ ] **Phase 4: Configuration** - Floor items, overflow ratios, tax bucket, accounts, and default setup
 - [ ] **Phase 5: History** - Allocation history log view with monthly reset
@@ -111,7 +111,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 0/? | Not started | - |
-| 2. Allocation Engine | 0/? | Not started | - |
+| 2. Allocation Engine | 3/3 | Complete   | 2026-02-28 |
 | 3. Core UI | 0/? | Not started | - |
 | 4. Configuration | 0/? | Not started | - |
 | 5. History | 0/? | Not started | - |

@@ -19,12 +19,12 @@
 
 ### Allocation Engine (ALLOC)
 
-- [ ] **ALLOC-01**: App auto-detects Stabilize vs Distribute mode — no manual toggle; detection based on floor coverage state and buffer balance
-- [ ] **ALLOC-02**: Stabilize mode: generates ordered move instructions to cover uncovered floor items in priority order until all floor items funded or invoice exhausted
-- [ ] **ALLOC-03**: Distribute mode: generates surplus split instructions by user-defined overflow ratios across configured accounts
-- [ ] **ALLOC-04**: Tax allocation: fixed percentage of invoice total (default 37%, user-configurable) goes to tax account first, before any floor or distribute logic
-- [ ] **ALLOC-05**: Every generated move shows exact calculation, rule applied, and reason (e.g. "37% of €2,000 = €740 → Isybank (tax rule)")
-- [ ] **ALLOC-06**: Allocation engine is pure TypeScript with zero React imports — fully unit-testable without a browser
+- [x] **ALLOC-01**: App auto-detects Stabilize vs Distribute mode — no manual toggle; detection based on floor coverage state and buffer balance
+- [x] **ALLOC-02**: Stabilize mode: generates ordered move instructions to cover uncovered floor items in priority order until all floor items funded or invoice exhausted
+- [x] **ALLOC-03**: Distribute mode: generates surplus split instructions by user-defined overflow ratios across configured accounts
+- [x] **ALLOC-04**: Tax allocation: fixed percentage of invoice total (default 37%, user-configurable) goes to tax account first, before any floor or distribute logic
+- [x] **ALLOC-05**: Every generated move shows exact calculation, rule applied, and reason (e.g. "37% of €2,000 = €740 → Isybank (tax rule)")
+- [x] **ALLOC-06**: Allocation engine is pure TypeScript with zero React imports — fully unit-testable without a browser
 
 ### Invoice Entry & Allocation Flow (INVOICE)
 
@@ -114,12 +114,12 @@
 | INFRA-05 | Phase 1 | Pending |
 | INFRA-06 | Phase 1 | Pending |
 | INFRA-07 | Phase 1 | Pending |
-| ALLOC-01 | Phase 2 | Pending |
-| ALLOC-02 | Phase 2 | Pending |
-| ALLOC-03 | Phase 2 | Pending |
-| ALLOC-04 | Phase 2 | Pending |
-| ALLOC-05 | Phase 2 | Pending |
-| ALLOC-06 | Phase 2 | Pending |
+| ALLOC-01 | Phase 2 | Complete |
+| ALLOC-02 | Phase 2 | Complete |
+| ALLOC-03 | Phase 2 | Complete |
+| ALLOC-04 | Phase 2 | Complete |
+| ALLOC-05 | Phase 2 | Complete |
+| ALLOC-06 | Phase 2 | Complete |
 | INVOICE-01 | Phase 3 | Pending |
 | INVOICE-02 | Phase 3 | Pending |
 | INVOICE-03 | Phase 3 | Pending |

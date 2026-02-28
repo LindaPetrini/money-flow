@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-28T14:38:43.547Z"
+last_updated: "2026-02-28T15:00:28.012Z"
 progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_phases: 2
+  completed_phases: 2
+  total_plans: 6
+  completed_plans: 6
 ---
 
 # Project State
@@ -47,6 +47,7 @@ Progress: [██░░░░░░░░] 14% (1/7 phases)
 - Trend: On track
 
 *Updated after each plan completion*
+| Phase 02-allocation-engine P03 | 10 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -60,6 +61,8 @@ Recent decisions affecting current work:
 - [Init]: Two modes (Stabilize/Distribute) auto-detected from state — never a manual toggle
 - [Init]: Vite 7 + React 19 + TypeScript + Tailwind v4 + shadcn/ui (New York) + Zustand 5 (no persist middleware)
 - [Init]: Allocation engine (`domain/allocationEngine.ts`) must have zero React imports — pure TS, testable in Node
+- [Phase 02-allocation-engine]: Buffer deficit used for mode detection only — no buffer top-up move generated in v1
+- [Phase 02-allocation-engine]: Empty overflowRatios produce an unallocated move rather than silently dropping cents
 
 ### Pending Todos
 
