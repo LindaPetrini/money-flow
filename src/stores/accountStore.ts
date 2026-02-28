@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { storage } from '@/lib/storage/storage';
+import { reportPermissionLost } from '@/lib/storage/StorageErrorContext';
 import type { Account } from '@/types/domain';
 import type { PersistedAccounts } from '@/types/persistence';
 
@@ -23,7 +24,15 @@ export const useAccountStore = create<AccountState>()((set, get) => ({
   setAccounts: async (accounts) => {
     if (!get().initialized) return;  // Guard: never write before load completes
     set({ accounts });
-    await storage.write<PersistedAccounts>('accounts', accounts);
+    try {
+      await storage.write<PersistedAccounts>('accounts', accounts);
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'NotAllowedError') {
+        reportPermissionLost();
+        return;
+      }
+      throw e;
+    }
   },
 
   updateBalance: async (id, newCents) => {
@@ -32,6 +41,14 @@ export const useAccountStore = create<AccountState>()((set, get) => ({
       a.id === id ? { ...a, balanceCents: newCents } : a
     );
     set({ accounts: updated });
-    await storage.write<PersistedAccounts>('accounts', updated);
+    try {
+      await storage.write<PersistedAccounts>('accounts', updated);
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'NotAllowedError') {
+        reportPermissionLost();
+        return;
+      }
+      throw e;
+    }
   },
 }));

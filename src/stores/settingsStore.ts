@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { storage } from '@/lib/storage/storage';
+import { reportPermissionLost } from '@/lib/storage/StorageErrorContext';
 import type { Settings } from '@/types/domain';
 import type { PersistedSettings } from '@/types/persistence';
 
@@ -32,6 +33,14 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     if (!get().initialized) return;  // Guard
     const updated = { ...get().settings, ...patch };
     set({ settings: updated });
-    await storage.write<PersistedSettings>('settings', updated);
+    try {
+      await storage.write<PersistedSettings>('settings', updated);
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'NotAllowedError') {
+        reportPermissionLost();
+        return;
+      }
+      throw e;
+    }
   },
 }));

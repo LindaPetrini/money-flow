@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { storage } from '@/lib/storage/storage';
+import { reportPermissionLost } from '@/lib/storage/StorageErrorContext';
 import type { AllocationRecord } from '@/types/domain';
 import type { PersistedHistory } from '@/types/persistence';
 
@@ -23,6 +24,14 @@ export const useAllocationStore = create<AllocationState>()((set, get) => ({
     if (!get().initialized) return;  // Guard
     const updated = [record, ...get().history];  // most recent first
     set({ history: updated });
-    await storage.write<PersistedHistory>('history', updated);
+    try {
+      await storage.write<PersistedHistory>('history', updated);
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'NotAllowedError') {
+        reportPermissionLost();
+        return;
+      }
+      throw e;
+    }
   },
 }));
