@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { fsaDriver } from '@/lib/storage/storage';
-import { useAccountStore } from '@/stores/accountStore';
 import { useStorageError } from '@/lib/storage/StorageErrorContext';
 import Dashboard from '@/features/dashboard/Dashboard';
 import { InvoicePage } from '@/features/invoice/InvoicePage';
@@ -17,8 +16,7 @@ interface AppProps {
 export default function App({ needsFsaPrompt, storageMode }: AppProps) {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'invoice' | 'history' | 'settings'>('dashboard');
   const { permissionLost } = useStorageError();
-  const accounts = useAccountStore(s => s.accounts);
-  const isFirstRun = needsFsaPrompt && accounts.length === 0;
+  const isFirstRun = needsFsaPrompt;
   const [idbNoticeDismissed, setIdbNoticeDismissed] = useState(
     () => localStorage.getItem('idb_notice_dismissed') === '1'
   );
