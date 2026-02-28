@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-28T16:59:09.833Z"
+last_updated: "2026-02-28T17:29:30.095Z"
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 6
-  total_plans: 18
-  completed_plans: 18
+  total_plans: 20
+  completed_plans: 19
 ---
 
 # Project State
@@ -22,20 +22,18 @@ See: .planning/PROJECT.md (updated 2026-02-27)
 
 ## Current Position
 
-Phase: 6 of 6 (CSV + AI) — COMPLETE (3/3 plans done)
+Phase: 7 of 7 (Hardening) — IN PROGRESS (1/2 plans done)
 Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI)
-Last completed: Phase 6 Plan 03 — CsvAiSection suggestion cards + Apply logic
-Last activity: 2026-02-28 — Phase 6 Plan 03 executed (suggestion cards, computeProjectedRatios, handleApply, SettingsPage CSV & AI tab verified)
+Last completed: Phase 7 Plan 01 — StorageErrorContext + store write guards
+Last activity: 2026-02-28 — Phase 7 Plan 01 executed (StorageErrorContext bridge, NotAllowedError guards in all 3 stores)
 
-Progress: [████████████████████] ~100% (6/6 planned phases complete)
+Progress: [████████████████████] ~95% (6/7 planned phases complete, 1 plan remaining)
 
 ## RESUME INSTRUCTIONS
 
-**Next step:** Execute Phase 6 Plan 03 (CsvAiSection suggestion cards + Apply logic)
-- anthropicClient.ts and CsvAiSection.tsx complete — analysisResult state ready for Plan 03 to render
-- Suggestion cards: 4 buckets, editable amounts, Accept/Skip toggles, Apply button
-- Apply: recalculate overflowRatios from accepted amounts, update settingsStore
-- Then Phase 7 (Hardening)
+**Next step:** Execute Phase 7 Plan 02
+- StorageErrorContext bridge complete — stores signal permission loss via reportPermissionLost()
+- Next: wire StorageErrorProvider into App.tsx and render permission-lost banner via useStorageError()
 
 **Build state:** Clean — `npm run build` passes, 114 tests passing (5 test files)
 **No blockers** — CORS concern resolved per research
@@ -64,6 +62,7 @@ Progress: [████████████████████] ~100% (
 | Phase 06-csv-import-ai-analysis P01 | 7 | 2 tasks | 4 files |
 | Phase 06-csv-import-ai-analysis P02 | 9 | 2 tasks | 3 files |
 | Phase 06-csv-import-ai-analysis P03 | 10 | 2 tasks | 1 files |
+| Phase 07-hardening P01 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -98,6 +97,8 @@ Recent decisions affecting current work:
 - [Phase 06-csv-import-ai-analysis 06-03]: Skipped buckets keep their original pct unchanged after Apply — only accepted entries affect ratio recalculation
 - [Phase 06-csv-import-ai-analysis 06-03]: Math.round() === 100 for ratio validation to avoid floating-point false negatives
 - [Phase 06-csv-import-ai-analysis 06-03]: Both analysisResult and suggestions reset to null after successful Apply — prevents stale re-apply
+- [Phase 07-hardening]: set() before try/catch in store writes — in-memory state preserved on FSA permission loss
+- [Phase 07-hardening]: Module-level setter pattern bridges Zustand stores to React context without hooks in store code
 
 ### Pending Todos
 
@@ -110,7 +111,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 6 Plan 03 (06-03) complete — CsvAiSection suggestion cards + Apply logic; 114 tests passing; build passes.
+Stopped at: Phase 7 Plan 01 (07-01) complete — StorageErrorContext + store write guards; 114 tests passing; build passes.
 Resume file: None
 
 ### Execution Notes (Phase 1)

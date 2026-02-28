@@ -12,8 +12,8 @@
 - [ ] **INFRA-01**: App scaffolds with Vite 7 + React 19 + TypeScript, runs via `npm start` on localhost with no server
 - [ ] **INFRA-02**: App is open-source publishable (no proprietary dependencies, clean GitHub repo)
 - [ ] **INFRA-03**: File System Access API integration — user grants directory access once per session; handle stored in IndexedDB for re-use
-- [ ] **INFRA-04**: FSA permission lifecycle handled correctly — `queryPermission()` on startup, `requestPermission()` inside user gesture, graceful `NotAllowedError` recovery
-- [ ] **INFRA-05**: IndexedDB fallback when FSA unavailable (Firefox/Safari) — all features work, no file persistence
+- [x] **INFRA-04**: FSA permission lifecycle handled correctly — `queryPermission()` on startup, `requestPermission()` inside user gesture, graceful `NotAllowedError` recovery
+- [x] **INFRA-05**: IndexedDB fallback when FSA unavailable (Firefox/Safari) — all features work, no file persistence
 - [ ] **INFRA-06**: All money arithmetic uses integer cents throughout (`parseCents`, `formatCents`, `splitCents` with largest-remainder) — no floating point in domain logic
 - [ ] **INFRA-07**: Data persisted as human-readable JSON files in user-selected directory via FSA
 
@@ -110,8 +110,8 @@
 | INFRA-01 | Phase 1 | Pending |
 | INFRA-02 | Phase 1 | Pending |
 | INFRA-03 | Phase 1 | Pending |
-| INFRA-04 | Phase 1 | Pending |
-| INFRA-05 | Phase 1 | Pending |
+| INFRA-04 | Phase 1 | Complete |
+| INFRA-05 | Phase 1 | Complete |
 | INFRA-06 | Phase 1 | Pending |
 | INFRA-07 | Phase 1 | Pending |
 | ALLOC-01 | Phase 2 | Complete |
