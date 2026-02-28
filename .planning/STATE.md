@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-28T16:44:58Z"
+last_updated: "2026-02-28T16:54:55.505Z"
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 18
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** Phase 6 — CSV + AI (IN PROGRESS — Plans 01-02 done, Plan 03 remains)
+**Current focus:** Phase 7 — Hardening (next phase)
 
 ## Current Position
 
-Phase: 6 of 7 (CSV + AI) — IN PROGRESS (2/3 plans done)
-Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History)
-Last completed: Phase 6 Plan 02 — anthropicClient.ts + CsvAiSection.tsx (API key UI, file upload, transaction preview)
-Last activity: 2026-02-28 — Phase 6 Plan 02 executed (anthropicClient: callAnthropicAPI, AIAnalysisResult, AnthropicAPIError; CsvAiSection: API key + upload + preview)
+Phase: 6 of 6 (CSV + AI) — COMPLETE (3/3 plans done)
+Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI)
+Last completed: Phase 6 Plan 03 — CsvAiSection suggestion cards + Apply logic
+Last activity: 2026-02-28 — Phase 6 Plan 03 executed (suggestion cards, computeProjectedRatios, handleApply, SettingsPage CSV & AI tab verified)
 
-Progress: [██████████████░░░░░░] ~72% (5/7 phases complete, Phase 6 in progress)
+Progress: [████████████████████] ~100% (6/6 planned phases complete)
 
 ## RESUME INSTRUCTIONS
 
@@ -63,6 +63,7 @@ Progress: [██████████████░░░░░░] ~72% (5
 | Phase 05-history P01 | 1 | 2 tasks | 1 file |
 | Phase 06-csv-import-ai-analysis P01 | 7 | 2 tasks | 4 files |
 | Phase 06-csv-import-ai-analysis P02 | 9 | 2 tasks | 3 files |
+| Phase 06-csv-import-ai-analysis P03 | 10 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,10 @@ Recent decisions affecting current work:
 - [Phase 06-csv-import-ai-analysis 06-02]: BUCKET_SCHEMA reused for all 4 bucket types — avoids repetition while keeping full inline schema
 - [Phase 06-csv-import-ai-analysis 06-02]: Format detection uses Papa.parse preview:1 per file — no change to csvParser.ts interface needed
 - [Phase 06-csv-import-ai-analysis 06-02]: API key lives only in localStorage — never in React state as real value; masked display string only
+- [Phase 06-csv-import-ai-analysis 06-03]: Account-to-bucket mapping uses sequential assignment from overflowRatios array — user can reassign via select, avoids brittle name-matching
+- [Phase 06-csv-import-ai-analysis 06-03]: Skipped buckets keep their original pct unchanged after Apply — only accepted entries affect ratio recalculation
+- [Phase 06-csv-import-ai-analysis 06-03]: Math.round() === 100 for ratio validation to avoid floating-point false negatives
+- [Phase 06-csv-import-ai-analysis 06-03]: Both analysisResult and suggestions reset to null after successful Apply — prevents stale re-apply
 
 ### Pending Todos
 
@@ -105,7 +110,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 6 Plan 02 (06-02) complete — anthropicClient.ts + CsvAiSection.tsx; 114 tests passing; build passes.
+Stopped at: Phase 6 Plan 03 (06-03) complete — CsvAiSection suggestion cards + Apply logic; 114 tests passing; build passes.
 Resume file: None
 
 ### Execution Notes (Phase 1)

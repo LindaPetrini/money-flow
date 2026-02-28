@@ -62,8 +62,8 @@
 - [x] **CSV-02**: App parses CSV with support for multiple bank formats (Wise, N26, Revolut) including UTF-8 BOM and European decimal separators
 - [x] **CSV-03**: User sees a preview of parsed transactions before confirming import
 - [x] **CSV-04**: AI (Anthropic API, user-provided key stored in localStorage) categorizes transactions into: everyday essentials, fun/discretionary, one-off/travel, recurring fixed
-- [ ] **CSV-05**: AI generates suggested bucket amounts based on 6-month spending averages
-- [ ] **CSV-06**: Every AI suggestion shows the reasoning — which pattern was detected and why the split was suggested (not just a number)
+- [x] **CSV-05**: AI generates suggested bucket amounts based on 6-month spending averages
+- [x] **CSV-06**: Every AI suggestion shows the reasoning — which pattern was detected and why the split was suggested (not just a number)
 - [x] **CSV-07**: User can accept, adjust, or ignore each suggestion individually
 - [x] **CSV-08**: API key entered by user at runtime in settings — never bundled, never hardcoded
 
@@ -142,8 +142,8 @@
 | CSV-02 | Phase 6 | Complete |
 | CSV-03 | Phase 6 | Complete |
 | CSV-04 | Phase 6 | Complete |
-| CSV-05 | Phase 6 | Pending |
-| CSV-06 | Phase 6 | Pending |
+| CSV-05 | Phase 6 | Complete |
+| CSV-06 | Phase 6 | Complete |
 | CSV-07 | Phase 6 | Complete |
 | CSV-08 | Phase 6 | Complete |
 
