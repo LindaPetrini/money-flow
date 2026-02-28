@@ -15,23 +15,23 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-27)
+See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** Phase 8 — Verify Core UI (gap closure verification)
+**Current focus:** Phase 9 — verify-configuration
 
 ## Current Position
 
-Phase: 8 of 10 (Verify Core UI) — PLAN 01 COMPLETE (1/1 plans done)
-Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI), 7 (Hardening), 8 (Verify Core UI plan 01)
-Last completed: Phase 8 Plan 01 — Core UI formal verification (03-VERIFICATION.md, REQUIREMENTS.md updated)
-Last activity: 2026-02-28 — Phase 8 Plan 01 executed (all 8 INVOICE/DASH requirements verified SATISFIED)
+Phase: 9 of 10 (verify-configuration) — Ready to plan
+Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI), 7 (Hardening), 8 (Verify Core UI)
+Last completed: Phase 8 — verify-core-ui (all 8 INVOICE/DASH requirements SATISFIED, 03-VERIFICATION.md created)
+Last activity: 2026-02-28 — Phase 8 execution and transition complete
 
-Progress: [████████████████████] (8 core phases complete + Phase 8 plan 01 done; Phases 9-10 gap closure remain)
+Progress: [████████████████████] 22/22 plans (100%)
 
 ## RESUME INSTRUCTIONS
 
-**Next: Phase 9 (verify-configuration)** — verify CONFIG-01 through CONFIG-07.
+**Next: Phase 9 (verify-configuration)** — formally verify CONFIG-01 through CONFIG-07 against Phase 4 configuration implementation.
 
 **Build state:** Clean — `npm run build` passes (1878 modules), 114 tests passing (5 test files)
 **No blockers**
@@ -119,7 +119,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 8 Plan 01 (08-01) complete — Phase 3 Core UI formally verified; 8 requirements SATISFIED; 03-VERIFICATION.md created; REQUIREMENTS.md updated; 114 tests passing; build passes.
+Stopped at: Phase 8 complete, transitioned to Phase 9 (verify-configuration) — ready to plan
 Resume file: None
 
 ### Execution Notes (Phase 1)

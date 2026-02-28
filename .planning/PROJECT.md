@@ -14,22 +14,21 @@ When an invoice lands, tell the user exactly where every euro goes — so they n
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ User can enter an invoice (amount + currency + EUR equivalent) and receive precise move instructions per account/bucket — Phase 3 (verified Phase 8)
+- ✓ App auto-detects Stabilize vs Distribute mode based on floor coverage and buffer balance — Phase 3 (verified Phase 8)
+- ✓ User can view all account balances on one dashboard — Phase 3 (verified Phase 8)
+- ✓ User can edit account balances inline (manual update) — Phase 3 (verified Phase 8)
+- ✓ Visual indicator shows accounts at/near/below target — Phase 3 (verified Phase 8)
+- ✓ "Done" button confirms a set of moves, updates balances atomically, logs to history — Phase 3 (verified Phase 8)
 
 ### Active
 
-- [ ] User can enter an invoice (amount + currency + EUR equivalent) and receive precise move instructions per account/bucket
-- [ ] App auto-detects Stabilize vs Distribute mode based on floor coverage and buffer balance
 - [ ] Stabilize mode: ordered instructions to cover uncovered floor items in priority order
 - [ ] Distribute mode: surplus split instructions by user-defined ratios
 - [ ] User can configure budget buckets (name, amount/percentage, destination account, priority)
 - [ ] Default allocation: 35% taxes, remainder split across configurable everyday/fun/savings/investing buckets
 - [ ] User can upload CSV expense history (6+ months) for AI-powered spending analysis
 - [ ] AI analysis suggests bucket splits based on actual spending patterns (everyday vs fun vs one-off/travel)
-- [ ] User can view all account balances on one dashboard
-- [ ] User can edit account balances inline (manual update)
-- [ ] Visual indicator shows accounts at/near/below target
-- [ ] "Done" button confirms a set of moves, updates balances atomically, logs to history
 - [ ] History log of all past allocations (date, invoice, mode, all moves made)
 - [ ] "New Month" reset: clears floor coverage toggles, preserves balances and history
 - [ ] Floor items support optional expiry dates (auto-deactivate)
@@ -92,11 +91,12 @@ Previous implementation attempt (Phase 1 complete) established the core data mod
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| File System Access API for persistence | Survives browser clears, human-readable JSON, no server needed | — Pending |
-| Integer cents for all money math | Eliminates floating point errors (0.1 + 0.2 === 0.3) | — Pending |
-| Two modes auto-detected (not user toggle) | Removes decision fatigue, always correct behavior | — Pending |
-| No backend / fully client-side | Open source, easy to run locally, privacy-preserving | — Pending |
-| Vite + React 19 + TypeScript + Tailwind v4 + shadcn/ui | Industry standard stack, fast DX, good component library | — Pending |
+| File System Access API for persistence | Survives browser clears, human-readable JSON, no server needed | Implemented Phase 1, hardened Phase 7 |
+| Integer cents for all money math | Eliminates floating point errors (0.1 + 0.2 === 0.3) | Implemented Phase 1, used throughout |
+| Two modes auto-detected (not user toggle) | Removes decision fatigue, always correct behavior | Implemented Phase 2, UI Phase 3 |
+| No backend / fully client-side | Open source, easy to run locally, privacy-preserving | Confirmed working Phase 6 (Anthropic direct browser API) |
+| Vite + React 19 + TypeScript + Tailwind v4 + shadcn/ui | Industry standard stack, fast DX, good component library | Implemented Phase 1 |
+| ALLOC-02 floor coverage defect deferred | `handleDone()` marks `destinationAccountId` instead of `floorItemId` — does not affect atomicity or allocation correctness | Deferred to Phase 10 (Fix Integration Defects) |
 
 ---
-*Last updated: 2026-02-27 after initialization*
+*Last updated: 2026-02-28 after Phase 8 (verify-core-ui)*
