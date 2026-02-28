@@ -58,9 +58,9 @@
 
 ### CSV Import & AI Analysis (CSV)
 
-- [ ] **CSV-01**: User can upload one or more CSV exports from their bank(s) (6+ months of transaction history)
-- [ ] **CSV-02**: App parses CSV with support for multiple bank formats (Wise, N26, Revolut) including UTF-8 BOM and European decimal separators
-- [ ] **CSV-03**: User sees a preview of parsed transactions before confirming import
+- [x] **CSV-01**: User can upload one or more CSV exports from their bank(s) (6+ months of transaction history)
+- [x] **CSV-02**: App parses CSV with support for multiple bank formats (Wise, N26, Revolut) including UTF-8 BOM and European decimal separators
+- [x] **CSV-03**: User sees a preview of parsed transactions before confirming import
 - [ ] **CSV-04**: AI (Anthropic API, user-provided key stored in localStorage) categorizes transactions into: everyday essentials, fun/discretionary, one-off/travel, recurring fixed
 - [ ] **CSV-05**: AI generates suggested bucket amounts based on 6-month spending averages
 - [ ] **CSV-06**: Every AI suggestion shows the reasoning — which pattern was detected and why the split was suggested (not just a number)
@@ -138,9 +138,9 @@
 | HIST-01 | Phase 5 | Complete |
 | HIST-02 | Phase 5 | Complete |
 | HIST-03 | Phase 5 | Complete |
-| CSV-01 | Phase 6 | Pending |
-| CSV-02 | Phase 6 | Pending |
-| CSV-03 | Phase 6 | Pending |
+| CSV-01 | Phase 6 | Complete |
+| CSV-02 | Phase 6 | Complete |
+| CSV-03 | Phase 6 | Complete |
 | CSV-04 | Phase 6 | Pending |
 | CSV-05 | Phase 6 | Pending |
 | CSV-06 | Phase 6 | Pending |
