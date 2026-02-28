@@ -5,7 +5,6 @@ import {
   extractExpenses,
   parseCSVFile,
   type BankFormat,
-  type ParsedTransaction,
 } from './csvParser';
 
 // ---------------------------------------------------------------------------
@@ -380,9 +379,9 @@ describe('parseCSVFile', () => {
   it('parses an N26 CSV file', async () => {
     const csvContent = [
       'Date,Payee,Account number,Transaction type,Payment reference,Amount (EUR)',
-      '2024-02-01,Rewe GmbH,,MasterCard,-56.40',
-      '2024-02-05,,,Income,2500.00',
-      '2024-02-10,Netflix,,Direct Debit,-15.99',
+      '2024-02-01,Rewe GmbH,,MasterCard Payment,Rewe ref,-56.40',
+      '2024-02-05,,,Income,Freelance Feb,2500.00',
+      '2024-02-10,Netflix,,Direct Debit,NF-SUB,-15.99',
     ].join('\n');
 
     const file = new File([csvContent], 'n26.csv', { type: 'text/csv' });
