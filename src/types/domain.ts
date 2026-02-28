@@ -35,6 +35,7 @@ export interface Settings {
 
 export interface AllocationMove {
   destinationAccountId: string;
+  floorItemId?: string;   // set on floor moves only; matches FloorItem.id for coverage marking
   amountCents: number;
   rule: string;           // e.g. "tax" | "floor" | "distribute"
   calculation: string;    // e.g. "37% of €2,000 = €740"

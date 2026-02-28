@@ -105,6 +105,7 @@ function stabilize(
 
     moves.push({
       destinationAccountId: floor.destinationAccountId,
+      floorItemId: floor.id,
       amountCents: allocation as number,
       rule: 'floor',
       calculation: `Floor "${floor.name}": ${formatCents(allocation)} of ${formatCents(floor.amountCents as Cents)}`,

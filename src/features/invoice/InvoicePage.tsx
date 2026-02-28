@@ -71,10 +71,10 @@ export function InvoicePage() {
         : account;
     });
 
-    // 2. Collect destinationAccountIds from floor moves to mark covered
-    const coveredFloorAccountIds = state.result.moves
-      .filter(m => m.rule === 'floor')
-      .map(m => m.destinationAccountId);
+    // 2. Collect floorItemIds from floor moves to mark covered
+    const coveredFloorItemIds = state.result.moves
+      .filter(m => m.rule === 'floor' && m.floorItemId !== undefined)
+      .map(m => m.floorItemId as string);
 
     // 3. Build AllocationRecord
     const record: AllocationRecord = {
@@ -92,11 +92,11 @@ export function InvoicePage() {
     await appendAllocation(record);
 
     // 5. Mark covered floor items in settings
-    if (coveredFloorAccountIds.length > 0) {
+    if (coveredFloorItemIds.length > 0) {
       const { settings: currentSettings, updateSettings } = useSettingsStore.getState();
       await updateSettings({
         floorItems: currentSettings.floorItems.map(f =>
-          coveredFloorAccountIds.includes(f.destinationAccountId)
+          coveredFloorItemIds.includes(f.id)
             ? { ...f, coveredThisMonth: true }
             : f,
         ),

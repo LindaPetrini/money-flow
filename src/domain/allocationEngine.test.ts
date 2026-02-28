@@ -321,3 +321,30 @@ describe('AllocationResult structure', () => {
     }
   });
 });
+
+// ─── ALLOC-02 fix: floorItemId on stabilize moves ────────────────────────────
+
+describe('ALLOC-02 fix: stabilize moves carry floorItemId', () => {
+  it('each floor move has floorItemId matching the floor item id', () => {
+    const floor1 = makeFloor('rent', 120000, 1);
+    const floor2 = makeFloor('utilities', 20000, 2);
+    const settings = baseSettings({
+      floorItems: [floor1, floor2],
+    });
+    const accounts = [emptyBuffer, taxAccount];
+    const result = computeAllocation(300000 as Cents, accounts, settings, TODAY);
+    const floorMoves = result.moves.filter(m => m.rule === 'floor');
+    expect(floorMoves).toHaveLength(2);
+    expect(floorMoves[0].floorItemId).toBe('rent');
+    expect(floorMoves[1].floorItemId).toBe('utilities');
+  });
+
+  it('tax and distribute moves do not have floorItemId', () => {
+    const accounts = [fundedBuffer, taxAccount];
+    const result = computeAllocation(200000 as Cents, accounts, baseSettings(), TODAY);
+    const nonFloorMoves = result.moves.filter(m => m.rule !== 'floor');
+    for (const move of nonFloorMoves) {
+      expect(move.floorItemId).toBeUndefined();
+    }
+  });
+});
