@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-28T18:15:18.640Z"
+last_updated: "2026-02-28T18:45:43.706Z"
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 21
-  completed_plans: 21
+  total_phases: 10
+  completed_phases: 8
+  total_plans: 22
+  completed_plans: 22
 ---
 
 # Project State
@@ -18,22 +18,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** COMPLETE — all 7 phases executed
+**Current focus:** Phase 8 — Verify Core UI (gap closure verification)
 
 ## Current Position
 
-Phase: 7 of 7 (Hardening) — COMPLETE (3/3 plans done)
-Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI), 7 (Hardening)
-Last completed: Phase 7 Plan 03 — Storage settings tab (StorageSection component, SettingsPage Storage tab)
-Last activity: 2026-02-28 — Phase 7 Plan 03 executed (StorageSection + SettingsPage Storage tab, both UAT gaps closed)
+Phase: 8 of 10 (Verify Core UI) — PLAN 01 COMPLETE (1/1 plans done)
+Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI), 7 (Hardening), 8 (Verify Core UI plan 01)
+Last completed: Phase 8 Plan 01 — Core UI formal verification (03-VERIFICATION.md, REQUIREMENTS.md updated)
+Last activity: 2026-02-28 — Phase 8 Plan 01 executed (all 8 INVOICE/DASH requirements verified SATISFIED)
 
-Progress: [████████████████████] 100% (7/7 phases complete, 21/21 plans complete)
+Progress: [████████████████████] (8 core phases complete + Phase 8 plan 01 done; Phases 9-10 gap closure remain)
 
 ## RESUME INSTRUCTIONS
 
-**All phases complete.** No further execution needed.
+**Next: Phase 9 (verify-configuration)** — verify CONFIG-01 through CONFIG-07.
 
-**Build state:** Clean — `npm run build` passes, 114 tests passing (5 test files)
+**Build state:** Clean — `npm run build` passes (1878 modules), 114 tests passing (5 test files)
 **No blockers**
 
 ## Performance Metrics
@@ -63,6 +63,7 @@ Progress: [████████████████████] 100% (7
 | Phase 07-hardening P01 | 2 | 2 tasks | 4 files |
 | Phase 07-hardening P02 | 5 | 2 tasks | 2 files |
 | Phase 07-hardening P03 | 2 | 2 tasks | 2 files |
+| Phase 08-verify-core-ui P01 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,8 @@ Recent decisions affecting current work:
 - [Phase 07-hardening 07-02]: IDB banner gated on fsaDriver === null to avoid false positive during FSA permission-pending flow
 - [Phase 07-hardening]: StorageSection reads fsaDriver singleton directly (no props) — consistent with App.tsx pattern, avoids prop-drilling
 - [Phase 07-hardening]: AbortError from cancelled directory picker caught silently — no reload or error shown to user
+- [Phase 08-verify-core-ui]: INVOICE-03 and INVOICE-04 marked SATISFIED despite ALLOC-02 defect — atomicity and no-partial-confirm acceptance criteria both correct
+- [Phase 08-verify-core-ui]: Verification-only phase: zero source code changes; all evidence gathered from existing Phase 3 implementation
 
 ### Pending Todos
 
@@ -116,7 +119,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 7 Plan 03 (07-03) complete — storage settings tab added, all UAT gaps closed; 114 tests passing; build passes.
+Stopped at: Phase 8 Plan 01 (08-01) complete — Phase 3 Core UI formally verified; 8 requirements SATISFIED; 03-VERIFICATION.md created; REQUIREMENTS.md updated; 114 tests passing; build passes.
 Resume file: None
 
 ### Execution Notes (Phase 1)
