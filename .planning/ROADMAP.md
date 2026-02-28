@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Hardening** - Production-quality error recovery, FSA re-prompt UX, onboarding polish (completed 2026-02-28)
 - [x] **Phase 8: Verify Core UI** - Formal verification of Phase 3 — creates VERIFICATION.md closing INVOICE-01/02/03/04 and DASH-01/02/03/04 (completed 2026-02-28)
 - [x] **Phase 9: Verify Configuration** - Formal verification of Phase 4 — creates VERIFICATION.md closing CONFIG-01 through CONFIG-07 (completed 2026-02-28)
-- [ ] **Phase 10: Fix Integration Defects** - Fix ALLOC-02 floor item coverage marking (medium), INFRA-04 first-run detection (low-ux), and stale Phase 02 VERIFICATION.md
+- [x] **Phase 10: Fix Integration Defects** - Fix ALLOC-02 floor item coverage marking (medium), INFRA-04 first-run detection (low-ux), and stale Phase 02 VERIFICATION.md (completed 2026-02-28)
 
 ## Phase Details
 
@@ -170,4 +170,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Hardening | 3/3 | Complete   | 2026-02-28 |
 | 8. Verify Core UI | 1/1 | Complete   | 2026-02-28 |
 | 9. Verify Configuration | 1/1 | Complete   | 2026-02-28 |
-| 10. Fix Integration Defects | 0/? | Not started | - |
+| 10. Fix Integration Defects | 3/3 | Complete    | 2026-02-28 |
