@@ -28,17 +28,17 @@
 
 ### Invoice Entry & Allocation Flow (INVOICE)
 
-- [ ] **INVOICE-01**: User can enter invoice: amount, currency, and EUR equivalent (manual entry — no auto exchange rate)
-- [ ] **INVOICE-02**: After invoice entry, app displays a complete set of move instructions (amounts, destination accounts, reasons) in one view
-- [ ] **INVOICE-03**: "Done" button confirms all moves atomically — updates all account balances in a single operation and logs the allocation to history
-- [ ] **INVOICE-04**: No partial confirmation — all moves in an allocation are confirmed together or not at all
+- [x] **INVOICE-01**: User can enter invoice: amount, currency, and EUR equivalent (manual entry — no auto exchange rate)
+- [x] **INVOICE-02**: After invoice entry, app displays a complete set of move instructions (amounts, destination accounts, reasons) in one view
+- [x] **INVOICE-03**: "Done" button confirms all moves atomically — updates all account balances in a single operation and logs the allocation to history
+- [x] **INVOICE-04**: No partial confirmation — all moves in an allocation are confirmed together or not at all
 
 ### Dashboard & Accounts (DASH)
 
-- [ ] **DASH-01**: User can view all account balances on one dashboard screen
-- [ ] **DASH-02**: User can edit any account balance inline (manual update, not bank sync)
-- [ ] **DASH-03**: Visual indicator shows each account's status: at target / near target / below target
-- [ ] **DASH-04**: Dashboard shows current mode (Stabilize / Distribute) with brief explanation of why
+- [x] **DASH-01**: User can view all account balances on one dashboard screen
+- [x] **DASH-02**: User can edit any account balance inline (manual update, not bank sync)
+- [x] **DASH-03**: Visual indicator shows each account's status: at target / near target / below target
+- [x] **DASH-04**: Dashboard shows current mode (Stabilize / Distribute) with brief explanation of why
 
 ### Configuration (CONFIG)
 
@@ -120,14 +120,14 @@
 | ALLOC-04 | Phase 2 | Complete |
 | ALLOC-05 | Phase 2 | Complete |
 | ALLOC-06 | Phase 2 | Complete |
-| INVOICE-01 | Phase 8 | Pending |
-| INVOICE-02 | Phase 8 | Pending |
-| INVOICE-03 | Phase 8 | Pending |
-| INVOICE-04 | Phase 8 | Pending |
-| DASH-01 | Phase 8 | Pending |
-| DASH-02 | Phase 8 | Pending |
-| DASH-03 | Phase 8 | Pending |
-| DASH-04 | Phase 8 | Pending |
+| INVOICE-01 | Phase 3 (verified Phase 8) | Complete |
+| INVOICE-02 | Phase 3 (verified Phase 8) | Complete |
+| INVOICE-03 | Phase 3 (verified Phase 8) | Complete |
+| INVOICE-04 | Phase 3 (verified Phase 8) | Complete |
+| DASH-01 | Phase 3 (verified Phase 8) | Complete |
+| DASH-02 | Phase 3 (verified Phase 8) | Complete |
+| DASH-03 | Phase 3 (verified Phase 8) | Complete |
+| DASH-04 | Phase 3 (verified Phase 8) | Complete |
 | CONFIG-01 | Phase 9 | Pending |
 | CONFIG-02 | Phase 9 | Pending |
 | CONFIG-03 | Phase 9 | Pending |
@@ -151,7 +151,7 @@
 - v1 requirements: 39 total
 - Mapped to phases: 39 (Phases 1-7 core build; Phases 8-9 gap closure verification; Phase 10 integration defect fixes)
 - Unmapped: 0 ✓
-- Pending (gap closure): 15 (INVOICE-01/02/03/04, DASH-01/02/03/04, CONFIG-01/02/03/04/05/06/07 → close via Phases 8-9)
+- Pending (gap closure): 7 (CONFIG-01/02/03/04/05/06/07 → close via Phase 9)
 
 ---
 
