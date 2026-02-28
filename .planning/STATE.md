@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-02-28T15:30:58.432Z"
+status: in_progress
+last_updated: "2026-02-28T15:35:00.000Z"
 progress:
-  total_phases: 4
-  completed_phases: 3
-  total_plans: 14
-  completed_plans: 12
+  total_phases: 7
+  completed_phases: 4
+  total_plans: 18
+  completed_plans: 18
 ---
 
 # Project State
@@ -18,16 +18,29 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** Phase 3 — Core UI (complete)
+**Current focus:** Phase 5 — History (NEXT TO EXECUTE)
 
 ## Current Position
 
-Phase: 3 of 7 (Core UI) — COMPLETE
-Plan: 4 of 4 complete in current phase (03-01 bootstrap/seed, 03-02 dashboard, 03-03 invoice, 03-04 navigation)
-Status: Phase 3 complete — three-tab navigation shell wired; app usable end-to-end
-Last activity: 2026-02-28 — Phase 3 Plan 04 executed (three-tab navigation, HistoryPage placeholder)
+Phase: 5 of 7 (History) — NEXT
+Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration)
+Last completed: Phase 4 — Configuration (4/4 plans done: settings tab, accounts CRUD, floor items CRUD, overflow ratios + tax/buffer)
+Last activity: 2026-02-28 — Phase 4 Plan 04 executed (overflow ratios, tax/buffer settings)
 
-Progress: [████████░░] ~55% (phases 1+2 complete, phase 3 fully done)
+Progress: [████████████░░░░░░░░] ~57% (4/7 phases complete)
+
+## RESUME INSTRUCTIONS
+
+**Next step:** Plan + execute Phase 5 (History)
+- Requirements: HIST-01, HIST-02, HIST-03
+- Goal: History list (most recent first), expandable entries, "New Month" reset
+- HistoryPage.tsx exists as placeholder at `src/features/history/HistoryPage.tsx`
+- History store is at `src/stores/allocationStore.ts` (uses `useAllocationStore`)
+- AllocationRecord type in `src/types/domain.ts`
+- Then Phase 6 (CSV + AI), then Phase 7 (Hardening)
+
+**Build state:** Clean — `npm run build` passes, 75 tests passing (4 test files)
+**No blockers** except Phase 6 CORS concern (see Blockers below)
 
 ## Performance Metrics
 
