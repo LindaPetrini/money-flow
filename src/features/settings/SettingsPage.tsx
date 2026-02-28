@@ -4,8 +4,9 @@ import { FloorItemsSection } from './FloorItemsSection';
 import { OverflowRatiosSection } from './OverflowRatiosSection';
 import { TaxBufferSection } from './TaxBufferSection';
 import { CsvAiSection } from './CsvAiSection';
+import { StorageSection } from './StorageSection';
 
-type SettingsSection = 'accounts' | 'floor-items' | 'overflow-ratios' | 'tax-buffer' | 'csv-ai';
+type SettingsSection = 'accounts' | 'floor-items' | 'overflow-ratios' | 'tax-buffer' | 'csv-ai' | 'storage';
 
 const SECTIONS: { id: SettingsSection; label: string }[] = [
   { id: 'accounts',         label: 'Accounts' },
@@ -13,6 +14,7 @@ const SECTIONS: { id: SettingsSection; label: string }[] = [
   { id: 'overflow-ratios',  label: 'Overflow Ratios' },
   { id: 'tax-buffer',       label: 'Tax & Buffer' },
   { id: 'csv-ai',           label: 'CSV & AI' },
+  { id: 'storage',          label: 'Storage' },
 ];
 
 export function SettingsPage() {
@@ -23,7 +25,7 @@ export function SettingsPage() {
       <h1 className="text-xl font-semibold mb-6">Settings</h1>
 
       {/* Sub-section tab bar */}
-      <nav className="flex gap-4 border-b border-border mb-6">
+      <nav className="flex gap-4 border-b border-border mb-6 flex-wrap">
         {SECTIONS.map(s => (
           <button
             key={s.id}
@@ -46,6 +48,7 @@ export function SettingsPage() {
       {activeSection === 'overflow-ratios' && <OverflowRatiosSection />}
       {activeSection === 'tax-buffer' && <TaxBufferSection />}
       {activeSection === 'csv-ai' && <CsvAiSection />}
+      {activeSection === 'storage' && <StorageSection />}
     </div>
   );
 }
