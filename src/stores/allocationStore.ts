@@ -16,7 +16,13 @@ export const useAllocationStore = create<AllocationState>()((set, get) => ({
   history: [],
 
   loadHistory: async () => {
-    const data = await storage.read<PersistedHistory>('history') ?? [];
+    const raw = await storage.read<PersistedHistory>('history') ?? [];
+    // Read-time migration: inject source='' for pre-v1.1 records that lack the field.
+    // Do NOT write back to disk — this is in-memory only to preserve backward compatibility.
+    const data = raw.map(record => ({
+      ...record,
+      source: record.source ?? '',
+    }));
     set({ history: data, initialized: true });
   },
 
