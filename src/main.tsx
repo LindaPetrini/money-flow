@@ -6,6 +6,7 @@ import { bootstrapStorage, type BootstrapResult } from '@/lib/storage/storage';
 import { useAccountStore } from '@/stores/accountStore';
 import { useAllocationStore } from '@/stores/allocationStore';
 import { useSettingsStore } from '@/stores/settingsStore';
+import { seedIfEmpty } from '@/lib/bootstrap';
 
 async function init() {
   const bootstrapResult: BootstrapResult = await bootstrapStorage();
@@ -16,6 +17,7 @@ async function init() {
     useAllocationStore.getState().loadHistory(),
     useSettingsStore.getState().loadSettings(),
   ]);
+  await seedIfEmpty();
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
