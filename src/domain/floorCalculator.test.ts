@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import type { Cents } from '@/lib/cents';
 import { sortedActiveUncoveredFloors, totalUncoveredCents } from './floorCalculator';
 import type { FloorItem } from '@/types/domain';
 
