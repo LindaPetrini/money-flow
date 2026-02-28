@@ -7,6 +7,7 @@ import { useAccountStore } from '@/stores/accountStore';
 import { useAllocationStore } from '@/stores/allocationStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { seedIfEmpty } from '@/lib/bootstrap';
+import { StorageErrorProvider } from '@/lib/storage/StorageErrorContext';
 
 async function init() {
   const bootstrapResult: BootstrapResult = await bootstrapStorage();
@@ -21,7 +22,9 @@ async function init() {
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <App needsFsaPrompt={bootstrapResult.needsFsaPrompt} storageMode={bootstrapResult.mode} />
+      <StorageErrorProvider>
+        <App needsFsaPrompt={bootstrapResult.needsFsaPrompt} storageMode={bootstrapResult.mode} />
+      </StorageErrorProvider>
     </StrictMode>,
   );
 }
