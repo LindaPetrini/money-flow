@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-28T19:12:00.336Z"
+last_updated: "2026-02-28T19:15:24.628Z"
 progress:
   total_phases: 10
   completed_phases: 10
@@ -18,7 +18,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** v1.0 milestone complete — all 10 phases done
+**Current focus:** v1.0 milestone archived — ready for v1.1 planning
 
 ## Current Position
 
@@ -31,10 +31,10 @@ Progress: [████████████████████] 26/26 p
 
 ## RESUME INSTRUCTIONS
 
-**v1.0 milestone complete.** All requirements shipped and verified.
+**v1.0 milestone archived.** All requirements shipped, verified, and archived.
 
-**Build state:** Clean — `npm run build` passes (1878 modules), 116 tests passing (5 test files)
-**No blockers**
+**Build state:** Clean — `npm run build` passes (1878 modules), 116 tests passing
+**Next milestone:** `/gsd:new-milestone` to plan v1.1
 
 ## Performance Metrics
 

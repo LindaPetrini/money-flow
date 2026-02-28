@@ -49,35 +49,36 @@ When an invoice lands, tell the user exactly where every euro goes — so they n
 - Undo/redo
 - Dark mode
 
+## Current State (v1.0)
+
+v1.0 shipped 2026-02-28. All 19 requirements implemented and formally verified.
+
+**Build:** `npm run build` — 1878 modules, 0 TypeScript errors
+**Tests:** 116 passing (Vitest)
+**Run:** `npm start` → https://ai-bot-server.tail18768e.ts.net:5173 (HTTPS required for FSA)
+**Source:** ~5,080 LOC TypeScript/TSX
+
+**What's working:**
+- Full invoice-to-allocation flow with transparency (Stabilize + Distribute modes)
+- Account dashboard with inline balance editing and status indicators
+- Settings: accounts, floor items (with expiry), overflow ratios, Wise buffer, tax %
+- History log of all past allocations
+- CSV upload + Anthropic AI bucket-split suggestions
+- File System Access API persistence with IndexedDB fallback
+- First-run onboarding + FSA permission lifecycle
+
 ## Context
 
-Previous implementation attempt (Phase 1 complete) established the core data model and persistence approach. Starting fresh with cleaner architecture but preserving all design decisions from that work.
-
-**Key design decisions already made:**
-- Integer cents throughout (no floating point money bugs)
+**Key design decisions:**
+- Integer cents throughout (no floating point money bugs) — `parseCents`/`formatCents`/`splitCents`
 - File System Access API + IndexedDB for persistence (survives browser clears, human-readable JSON)
-- No backend — fully client-side
-- Two modes (Stabilize / Distribute) auto-detected, never a manual toggle
+- No backend — fully client-side; Anthropic API called directly from browser (`anthropic-dangerous-direct-browser-access: true`)
+- Two modes (Stabilize / Distribute) auto-detected from state — never a manual toggle
 
-**Example account setup (from original spec, now user-configurable):**
-- Income landing account (e.g. Wise) — acts as distribution hub, has buffer target
-- Everyday spending account (e.g. N26) — loaded to fixed monthly amount
-- Fun/discretionary (e.g. Revolut card) — overflow destination
-- Medium-term savings (e.g. Revolut vault) — overflow destination
-- Tax reserve (e.g. Isybank) — money in, not out until tax time
-- Long-term investing (e.g. IBKR) — overflow destination
-
-**Floor logic:**
-- Tax: calculated as % of each invoice (default 37%, configurable)
-- Fixed monthly commitments: rent, therapy, subscriptions, everyday spending
-- Floor total = sum of active (non-expired) items
-- Floor funded first; only surplus goes to overflow split
-
-**AI CSV analysis:**
-- User uploads CSV exports from bank(s)
-- AI categorizes transactions into: everyday essentials, fun/discretionary, one-off/travel, recurring fixed
-- Suggests bucket amounts based on 6-month average
-- User can accept, adjust, or ignore suggestions
+**Account model:**
+- Income landing account (e.g. Wise) — distribution hub with buffer target
+- Everyday/fun/savings/investing — configurable overflow destinations
+- Tax reserve — floor item receiving % of each invoice
 
 ## Constraints
 
