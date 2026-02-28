@@ -1,8 +1,8 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: unknown
+milestone: v1.1
+milestone_name: AI-Powered Insights
+status: defining_requirements
 last_updated: "2026-02-28T19:15:24.628Z"
 progress:
   total_phases: 10
@@ -22,19 +22,10 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 
 ## Current Position
 
-Phase: 10/10 — COMPLETE (v1.0 milestone finished)
-Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI), 7 (Hardening), 8 (Verify Core UI), 9 (Verify Configuration), 10 (Fix Integration Defects)
-Last completed: Phase 10 — fix-integration-defects (ALLOC-02 floor coverage fixed, INFRA-04 first-run fixed, Phase 02 VERIFICATION.md promoted to passed)
-Last activity: 2026-02-28 — v1.0 milestone complete
-
-Progress: [████████████████████] 26/26 plans (100%)
-
-## RESUME INSTRUCTIONS
-
-**v1.0 milestone archived.** All requirements shipped, verified, and archived.
-
-**Build state:** Clean — `npm run build` passes (1878 modules), 116 tests passing
-**Next milestone:** `/gsd:new-milestone` to plan v1.1
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-28 — Milestone v1.1 started
 
 ## Performance Metrics
 

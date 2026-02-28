@@ -36,7 +36,16 @@ When an invoice lands, tell the user exactly where every euro goes — so they n
 
 ### Active
 
-(None — all v1.0 requirements shipped)
+<!-- v1.1 scope — building toward these -->
+
+- [ ] AI asks about uncertain CSV transactions; user provides context + bucket assignment
+- [ ] Transaction labels persist across imports (merchant → bucket memory)
+- [ ] AI detects recurring expenses from CSV and suggests them as floor items
+- [ ] Suggested floor item pre-fills the floor item form on confirm
+- [ ] Invoice entry has a "from" field (client name) — optional
+- [ ] Client name shown in history log
+- [ ] History is searchable/filterable by date range, client, and amount
+- [ ] Dark mode toggle persisted across sessions
 
 ### Out of Scope
 
@@ -47,6 +56,17 @@ When an invoice lands, tell the user exactly where every euro goes — so they n
 - Multi-user
 - Mobile app
 - Undo/redo
+- Dark mode
+
+## Current Milestone: v1.1 AI-Powered Insights
+
+**Goal:** Enrich the CSV import flow with interactive AI analysis and extend the app with quality-of-life improvements.
+
+**Target features:**
+- AI transaction Q&A: AI asks about uncertain expenses, user provides context + bucket, answers persist for future imports
+- AI floor item detection: AI spots recurring expenses from CSV and suggests them as pre-filled floor items
+- Invoice source tracking: "from" field on invoice entry, shown in history log
+- History search/filter: filter allocation history by date range, client, or amount
 - Dark mode
 
 ## Current State (v1.0)
