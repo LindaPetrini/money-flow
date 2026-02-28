@@ -61,12 +61,12 @@ Plans:
   3. User can type a client or project name in an optional "From" field on the invoice entry form; the field is skippable
   4. Client name appears in the collapsed history row for allocations that have one; allocations without a source display normally
   5. User can filter the history list by date range, client/source text search, and amount min/max; results update live as filters change
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 12-01: Dark mode — Tailwind `@custom-variant dark` selector fix, `localStorage` toggle, FOUC-prevention `<head>` script, header toggle control
-- [ ] 12-02: Invoice source field — "From" input on `InvoiceForm`, persisted on `AllocationRecord.source`, displayed in `HistoryPage` collapsed rows
-- [ ] 12-03: History filter panel — `HistoryFilters.tsx` component with date range, client search, amount range; `useMemo`-derived filtered list in `HistoryPage`
+- [ ] 12-01-PLAN.md — Dark mode: FOUC script in `index.html`, `@custom-variant dark` selector fix, `applyTheme` localStorage mirror, Sun/Moon/Monitor toggle in `App.tsx` header
+- [ ] 12-02-PLAN.md — Invoice source: "From" input on `InvoiceForm`, threaded through `InvoicePage` into `AllocationRecord.source`, shown in `HistoryPage` collapsed rows
+- [ ] 12-03-PLAN.md — History filters: `HistoryFilters.tsx` component (date range, source search, amount range); `useMemo` `filteredHistory` in `HistoryPage`
 
 ### Phase 13: AI Layer
 **Goal**: The CSV import flow asks users about uncertain transactions, remembers their answers for future imports, and detects recurring expenses to suggest as pre-filled floor items
@@ -99,6 +99,6 @@ Plans:
 | 8. Verify Core UI | v1.0 | 1/1 | Complete | 2026-02-28 |
 | 9. Verify Configuration | v1.0 | 1/1 | Complete | 2026-02-28 |
 | 10. Fix Integration Defects | v1.0 | 3/3 | Complete | 2026-02-28 |
-| 11. Schema Foundation | 2/2 | Complete    | 2026-02-28 | - |
+| 11. Schema Foundation | v1.1 | 2/2 | Complete | 2026-02-28 |
 | 12. Quick Wins | v1.1 | 0/3 | Not started | - |
 | 13. AI Layer | v1.1 | 0/3 | Not started | - |
