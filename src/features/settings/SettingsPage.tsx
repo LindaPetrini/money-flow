@@ -38,9 +38,7 @@ export function SettingsPage() {
 
       {/* Section content — placeholders replaced in plans 02, 03, 04 */}
       {activeSection === 'accounts' && <AccountsSection />}
-      {activeSection === 'floor-items' && (
-        <div className="text-sm text-muted-foreground">Floor items configuration coming soon.</div>
-      )}
+      {activeSection === 'floor-items' && <FloorItemsSection />}
       {activeSection === 'overflow-ratios' && (
         <div className="text-sm text-muted-foreground">Overflow ratios configuration coming soon.</div>
       )}
