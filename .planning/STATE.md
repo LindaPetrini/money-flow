@@ -8,7 +8,7 @@ progress:
   total_phases: 13
   completed_phases: 10
   total_plans: 34
-  completed_plans: 26
+  completed_plans: 27
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 11 of 13 (Schema Foundation)
-Plan: — of 2
-Status: Ready to plan
-Last activity: 2026-02-28 — v1.1 roadmap created; Phase 11 is next
+Plan: 1 of 2
+Status: In progress
+Last activity: 2026-02-28 — 11-01 complete; 3 domain types added (source, theme, MerchantEntry), PersistedMerchants alias, read-time migration
 
-Progress: [████████░░] 77% (26/34 plans complete)
+Progress: [████████░░] 79% (27/34 plans complete)
 
 ## Performance Metrics
 
@@ -42,6 +42,7 @@ Progress: [████████░░] 77% (26/34 plans complete)
 |-------|-------|-------|----------|
 | 01 Foundation | 3 | 0.75h | ~15min |
 | 02–10 (v1.0) | 23 | ~5.75h | ~15min |
+| 11-01 Schema Foundation | 1 | 5min | 5min |
 
 **Recent Trend:**
 - Last 5 plans: Phase 10 (fix-integration-defects ×3), Phase 9, Phase 8
@@ -62,6 +63,9 @@ Recent decisions affecting v1.1:
 - [Research]: Tailwind v4 `@custom-variant dark` selector must be `(&:where(.dark, .dark *))` — current `(&:is(.dark *))` excludes root element
 - [Research]: FOUC prevention requires inline `<head>` script in `index.html` — no React-only fix exists
 - [Research]: `merchantStore` write guards (`if (!get().initialized) return`) must be in place before first write
+- [Phase 11-01]: `merchantName` stored case-preserved (not lowercased) — Phase 13 research determines case sensitivity strategy
+- [Phase 11-01]: source migration uses `?? ''` (empty string) not `?? undefined` — Phase 12 can call `record.source.toLowerCase()` without null check
+- [Phase 11-01]: Read-time migration only (no disk write) — preserves backward compatibility with pre-v1.1 data
 
 ### Pending Todos
 
@@ -74,5 +78,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: v1.1 roadmap created — three phases (11, 12, 13) defined with full success criteria; ready to plan Phase 11
+Stopped at: Completed 11-01-PLAN.md — schema foundation types in place; ready for 11-02 merchantStore
 Resume file: None
