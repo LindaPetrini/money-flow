@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useAllocationStore } from '@/stores/allocationStore';
 import { useAccountStore } from '@/stores/accountStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { addCents, formatCents } from '@/lib/cents';
+import { addCents, formatCents, parseCents } from '@/lib/cents';
 import type { Cents } from '@/lib/cents';
+import { HistoryFilters, type HistoryFiltersState } from './HistoryFilters';
 
 function formatHistoryDate(isoDate: string): string {
   // Split to avoid UTC midnight shift (new Date("YYYY-MM-DD") parses as UTC)
@@ -22,6 +23,26 @@ export function HistoryPage() {
   const history = useAllocationStore(s => s.history);
   const accounts = useAccountStore(s => s.accounts);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const [filters, setFilters] = useState<HistoryFiltersState>({
+    dateFrom: '',
+    dateTo: '',
+    sourceQuery: '',
+    amountMin: '',
+    amountMax: '',
+  });
+
+  const filteredHistory = useMemo(() => {
+    return history.filter(r => {
+      if (filters.dateFrom && r.date < filters.dateFrom) return false;
+      if (filters.dateTo && r.date > filters.dateTo) return false;
+      if (filters.sourceQuery &&
+          !(r.source ?? '').toLowerCase().includes(filters.sourceQuery.toLowerCase())) return false;
+      if (filters.amountMin && r.invoiceAmountCents < parseCents(filters.amountMin)) return false;
+      if (filters.amountMax && r.invoiceAmountCents > parseCents(filters.amountMax)) return false;
+      return true;
+    });
+  }, [history, filters]);
 
   const handleNewMonth = async () => {
     const confirmed = window.confirm(
@@ -51,10 +72,22 @@ export function HistoryPage() {
         </p>
       )}
 
-      {/* Accordion list */}
+      {/* Filter panel — shown whenever history has records */}
       {history.length > 0 && (
+        <HistoryFilters filters={filters} onChange={setFilters} />
+      )}
+
+      {/* Filtered-to-zero state */}
+      {history.length > 0 && filteredHistory.length === 0 && (
+        <p className="text-center text-muted-foreground py-8">
+          No results match the current filters.
+        </p>
+      )}
+
+      {/* Accordion list */}
+      {filteredHistory.length > 0 && (
         <div className="space-y-2">
-          {history.map((record) => {
+          {filteredHistory.map((record) => {
             const isOpen = expandedId === record.id;
             const modeLabel = record.mode === 'stabilize' ? 'Stabilize' : 'Distribute';
             const modeBadgeClass =
