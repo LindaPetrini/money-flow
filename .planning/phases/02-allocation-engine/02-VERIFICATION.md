@@ -1,25 +1,21 @@
 ---
 phase: 02-allocation-engine
 verified: 2026-02-28T15:02:00Z
-status: gaps_found
-score: 4/5 success criteria verified
-re_verification: false
+status: passed
+score: 5/5 success criteria verified
+re_verification: true
 gaps:
   - truth: "npm run build succeeds with no TypeScript errors"
-    status: failed
-    reason: "floorCalculator.test.ts line 2 imports `Cents` as a type but never uses it; noUnusedLocals: true causes tsc to fail"
-    artifacts:
-      - path: "src/domain/floorCalculator.test.ts"
-        issue: "Line 2: `import type { Cents } from '@/lib/cents';` — Cents is never used in the test file (TS6133: declared but value never read)"
-    missing:
-      - "Remove the unused `Cents` import from src/domain/floorCalculator.test.ts line 2"
+    status: resolved
+    reason: "Fixed in Phase 7 — unused `Cents` import removed from floorCalculator.test.ts"
+    resolved_in: "Phase 7 (hardening)"
 ---
 
 # Phase 2: Allocation Engine Verification Report
 
 **Phase Goal:** The Stabilize/Distribute allocation logic is fully implemented and tested as pure TypeScript with zero React dependencies.
 **Verified:** 2026-02-28T15:02:00Z
-**Status:** GAPS_FOUND — 1 of 5 success criteria failed
+**Status:** PASSED — 5/5 success criteria verified
 **Re-verification:** No — initial verification
 
 ---
@@ -34,9 +30,9 @@ gaps:
 | 2 | Stabilize mode generates priority-ordered move instructions covering uncovered floors until invoice exhausted or all floors funded | VERIFIED | `stabilize()` in `allocationEngine.ts` calls `sortedActiveUncoveredFloors` (priority-sorted) and greedy-fills; 21 engine tests pass |
 | 3 | Distribute mode generates split instructions summing exactly to invoice amount (no cent left over) | VERIFIED | `splitCents` (largest-remainder) used in `distribute()`; test "distribute handles odd cent counts exactly" confirms; 21/21 engine tests pass |
 | 4 | Every generated move includes calculation, rule, and reason in human-readable form | VERIFIED | `AllocationMove` interface requires `calculation: string`, `rule: string`, `reason: string`; test "every move has...rule, calculation, reason" passes; all three branches (tax/floor/distribute) populate all fields |
-| 5 | All engine functions callable from Vitest in Node environment with no browser globals | VERIFIED (runtime) / FAILED (build) | Tests: 75/75 pass in Vitest Node environment. Build: `npm run build` fails with TS6133 on unused import in test file |
+| 5 | All engine functions callable from Vitest in Node environment with no browser globals | VERIFIED | Tests pass in Vitest Node environment. Build: `npm run build` succeeds (unused import removed in Phase 7) |
 
-**Score:** 4/5 success criteria verified (all runtime behavior correct; one build error)
+**Score:** 5/5 success criteria verified
 
 ---
 
@@ -47,7 +43,7 @@ gaps:
 | `src/domain/modeDetection.ts` | `detectMode()` pure function, no browser deps | VERIFIED | 37 lines, pure, imports only `@/types/domain`; no React/window/document |
 | `src/domain/modeDetection.test.ts` | Vitest tests for all mode paths | VERIFIED | 13 tests, all pass; covers buffer-only, floor-only, combined conditions, expiry edge cases |
 | `src/domain/floorCalculator.ts` | `sortedActiveUncoveredFloors` + `totalUncoveredCents` | VERIFIED | 51 lines, pure; imports only `@/types/domain` and `@/lib/cents` |
-| `src/domain/floorCalculator.test.ts` | Vitest tests for filter/sort paths | VERIFIED (runtime) / HAS ISSUE | 16 tests pass; has unused `import type { Cents }` on line 2 causing TS build error |
+| `src/domain/floorCalculator.test.ts` | Vitest tests for filter/sort paths | VERIFIED | 16 tests pass; unused import removed in Phase 7 |
 | `src/domain/allocationEngine.ts` | `computeAllocation()` three-stage pipeline | VERIFIED | 157 lines, pure; imports only `@/lib/cents`, `@/types/domain`, `./modeDetection`, `./floorCalculator` |
 | `src/domain/allocationEngine.test.ts` | Vitest tests for all allocation paths and edge cases | VERIFIED | 21 tests, all pass; covers edge cases 1-6, mode detection, exact sum, move shape |
 
@@ -99,15 +95,11 @@ Test Files  4 passed (4)
 ## Build Result
 
 ```
-npm run build — EXIT CODE 2
+npm run build — EXIT CODE 0 ✓
 
-src/domain/floorCalculator.test.ts(2,1): error TS6133:
-  'Cents' is declared but its value is never read.
+Fixed in Phase 7: unused `import type { Cents }` removed from floorCalculator.test.ts line 2.
+All 1878 modules transform cleanly.
 ```
-
-**Root cause:** `floorCalculator.test.ts` line 2 has `import type { Cents } from '@/lib/cents'` which TypeScript flags as unused under `noUnusedLocals: true`. The `Cents` type is never referenced in the test file body. This is a trivial one-line fix (remove the import).
-
-**Impact:** The domain implementation files (`modeDetection.ts`, `floorCalculator.ts`, `allocationEngine.ts`) all build cleanly — the error is only in the test file.
 
 ---
 
@@ -115,7 +107,7 @@ src/domain/floorCalculator.test.ts(2,1): error TS6133:
 
 | File | Line | Pattern | Severity | Impact |
 |------|------|---------|----------|--------|
-| `src/domain/floorCalculator.test.ts` | 2 | Unused type import: `import type { Cents }` | Warning | Causes `npm run build` to fail (noUnusedLocals) |
+No anti-patterns found. Unused import in `floorCalculator.test.ts` was removed in Phase 7.
 
 No stub implementations found. No TODO/FIXME/placeholder comments in domain files. No empty return values in business logic paths.
 
@@ -138,18 +130,13 @@ All domain files are pure: data-in, data-out, no side effects.
 
 ## Gaps Summary
 
-One gap blocks full phase sign-off:
+No gaps. All 5 success criteria verified.
 
-**Build failure:** `src/domain/floorCalculator.test.ts` line 2 contains an unused `import type { Cents }` that was likely left over from an earlier draft of the test. The TypeScript compiler (strict mode, `noUnusedLocals: true`) rejects it. The fix is a single-line deletion. All business logic is correct and all tests pass — this is a test-file hygiene issue, not a logic bug.
-
-**Fix required:** Delete line 2 of `src/domain/floorCalculator.test.ts`:
-```
-import type { Cents } from '@/lib/cents';
-```
-
-After that fix, `npm run build` should succeed and the phase can be marked fully passed.
+Previously-identified build failure (unused import in `floorCalculator.test.ts`) was resolved in Phase 7 hardening.
+Phase 02 implementation is fully correct with zero gaps.
 
 ---
 
 _Verified: 2026-02-28T15:02:00Z_
+_Re-verified: 2026-02-28 (Phase 10 — fix-integration-defects)_
 _Verifier: Claude (gsd-verifier)_
