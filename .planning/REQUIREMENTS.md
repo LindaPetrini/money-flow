@@ -60,6 +60,8 @@ Deferred to v1.2 or later.
 
 Which phases cover which requirements. Updated during roadmap creation.
 
+Note: Phase 11 (Schema Foundation) is pure infrastructure — it carries no v1.1 requirements directly but is a hard dependency for Phases 12 and 13.
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | THEME-01 | Phase 12 | Pending |
@@ -84,4 +86,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-28*
-*Last updated: 2026-02-28 after initial v1.1 definition*
+*Last updated: 2026-02-28 — traceability confirmed after roadmap creation (Phases 11–13)*
