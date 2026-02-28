@@ -42,7 +42,7 @@
 
 ### Configuration (CONFIG)
 
-- [x] **CONFIG-01**: User can configure accounts (name, target balance, role: income-hub / spending / savings / tax / investing)
+- [ ] **CONFIG-01**: User can configure accounts (name, target balance, role: income-hub / spending / savings / tax / investing)
 - [ ] **CONFIG-02**: User can configure floor items (name, amount in cents, priority order, destination account)
 - [ ] **CONFIG-03**: Floor items support optional expiry dates — auto-deactivate when expired
 - [ ] **CONFIG-04**: User can configure overflow ratios (percentage split for Distribute mode across non-floor accounts)
@@ -120,21 +120,21 @@
 | ALLOC-04 | Phase 2 | Complete |
 | ALLOC-05 | Phase 2 | Complete |
 | ALLOC-06 | Phase 2 | Complete |
-| INVOICE-01 | Phase 3 | Pending |
-| INVOICE-02 | Phase 3 | Pending |
-| INVOICE-03 | Phase 3 | Pending |
-| INVOICE-04 | Phase 3 | Pending |
-| DASH-01 | Phase 3 | Pending |
-| DASH-02 | Phase 3 | Pending |
-| DASH-03 | Phase 3 | Pending |
-| DASH-04 | Phase 3 | Pending |
-| CONFIG-01 | Phase 4 | Complete |
-| CONFIG-02 | Phase 4 | Pending |
-| CONFIG-03 | Phase 4 | Pending |
-| CONFIG-04 | Phase 4 | Pending |
-| CONFIG-05 | Phase 4 | Pending |
-| CONFIG-06 | Phase 4 | Pending |
-| CONFIG-07 | Phase 4 | Pending |
+| INVOICE-01 | Phase 8 | Pending |
+| INVOICE-02 | Phase 8 | Pending |
+| INVOICE-03 | Phase 8 | Pending |
+| INVOICE-04 | Phase 8 | Pending |
+| DASH-01 | Phase 8 | Pending |
+| DASH-02 | Phase 8 | Pending |
+| DASH-03 | Phase 8 | Pending |
+| DASH-04 | Phase 8 | Pending |
+| CONFIG-01 | Phase 9 | Pending |
+| CONFIG-02 | Phase 9 | Pending |
+| CONFIG-03 | Phase 9 | Pending |
+| CONFIG-04 | Phase 9 | Pending |
+| CONFIG-05 | Phase 9 | Pending |
+| CONFIG-06 | Phase 9 | Pending |
+| CONFIG-07 | Phase 9 | Pending |
 | HIST-01 | Phase 5 | Complete |
 | HIST-02 | Phase 5 | Complete |
 | HIST-03 | Phase 5 | Complete |
@@ -148,11 +148,12 @@
 | CSV-08 | Phase 6 | Complete |
 
 **Coverage:**
-- v1 requirements: 38 total
-- Mapped to phases: 38 (Phases 1-6; Phase 7 is hardening of INFRA-04/INFRA-05 to production quality)
+- v1 requirements: 39 total
+- Mapped to phases: 39 (Phases 1-7 core build; Phases 8-9 gap closure verification; Phase 10 integration defect fixes)
 - Unmapped: 0 ✓
+- Pending (gap closure): 15 (INVOICE-01/02/03/04, DASH-01/02/03/04, CONFIG-01/02/03/04/05/06/07 → close via Phases 8-9)
 
 ---
 
 *Requirements defined: 2026-02-28*
-*Last updated: 2026-02-28 after roadmap creation (7 phases confirmed)*
+*Last updated: 2026-02-28 — gap closure phases 8-10 added after v1.0 audit*

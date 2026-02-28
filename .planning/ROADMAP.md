@@ -19,6 +19,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: History** - Allocation history log view with monthly reset (completed 2026-02-28)
 - [x] **Phase 6: CSV Import & AI Analysis** - CSV upload, parsing, AI categorization, and suggestion UI (completed 2026-02-28)
 - [x] **Phase 7: Hardening** - Production-quality error recovery, FSA re-prompt UX, onboarding polish (completed 2026-02-28)
+- [ ] **Phase 8: Verify Core UI** - Formal verification of Phase 3 — creates VERIFICATION.md closing INVOICE-01/02/03/04 and DASH-01/02/03/04
+- [ ] **Phase 9: Verify Configuration** - Formal verification of Phase 4 — creates VERIFICATION.md closing CONFIG-01 through CONFIG-07
+- [ ] **Phase 10: Fix Integration Defects** - Fix ALLOC-02 floor item coverage marking (medium), INFRA-04 first-run detection (low-ux), and stale Phase 02 VERIFICATION.md
 
 ## Phase Details
 
@@ -113,10 +116,44 @@ Plans:
   3. The first-run onboarding screen clearly guides users to choose a data directory before any allocation work begins
 **Plans**: TBD
 
+### Phase 8: Verify Core UI
+**Goal**: Formally verify that Phase 3 implementation satisfies all Core UI requirements — produce VERIFICATION.md that closes INVOICE-01/02/03/04 and DASH-01/02/03/04
+**Depends on**: Phase 7
+**Requirements**: INVOICE-01, INVOICE-02, INVOICE-03, INVOICE-04, DASH-01, DASH-02, DASH-03, DASH-04
+**Gap Closure**: Closes gaps from v1.0 audit — Phase 3 unverified (no VERIFICATION.md)
+**Success Criteria** (what must be TRUE):
+  1. VERIFICATION.md exists in `.planning/phases/03-core-ui/` confirming all 8 requirements
+  2. All 8 requirements marked satisfied against their acceptance criteria
+  3. No regressions — `npm run build` and `npm test` still pass
+**Plans**: TBD
+
+### Phase 9: Verify Configuration
+**Goal**: Formally verify that Phase 4 implementation satisfies all Configuration requirements — produce VERIFICATION.md that closes CONFIG-01 through CONFIG-07
+**Depends on**: Phase 8
+**Requirements**: CONFIG-01, CONFIG-02, CONFIG-03, CONFIG-04, CONFIG-05, CONFIG-06, CONFIG-07
+**Gap Closure**: Closes gaps from v1.0 audit — Phase 4 unverified (no VERIFICATION.md)
+**Success Criteria** (what must be TRUE):
+  1. VERIFICATION.md exists in `.planning/phases/04-configuration/` confirming all 7 requirements
+  2. All 7 requirements marked satisfied against their acceptance criteria
+  3. No regressions — `npm run build` and `npm test` still pass
+**Plans**: TBD
+
+### Phase 10: Fix Integration Defects
+**Goal**: Fix the two integration defects found in the v1.0 audit and update stale verification metadata
+**Depends on**: Phase 9
+**Requirements**: ALLOC-02 (integration defect), INFRA-04 (UX defect)
+**Gap Closure**: Closes ALLOC-02 medium integration gap and INFRA-04 first-run flow degradation from v1.0 audit
+**Success Criteria** (what must be TRUE):
+  1. `AllocationMove` type has `floorItemId?: string`; `allocationEngine.ts` stabilize() populates it; `InvoicePage.handleDone()` uses it for coverage marking (not `destinationAccountId`)
+  2. First-run onboarding card is shown correctly in Chrome — detection decoupled from `accounts.length`
+  3. Phase 02 `VERIFICATION.md` status updated from `gaps_found` to `passed`
+  4. All 114 existing tests still pass; `npm run build` succeeds
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -127,3 +164,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 5. History | 1/1 | Complete   | 2026-02-28 |
 | 6. CSV Import & AI Analysis | 3/3 | Complete   | 2026-02-28 |
 | 7. Hardening | 3/3 | Complete   | 2026-02-28 |
+| 8. Verify Core UI | 0/? | Not started | - |
+| 9. Verify Configuration | 0/? | Not started | - |
+| 10. Fix Integration Defects | 0/? | Not started | - |
