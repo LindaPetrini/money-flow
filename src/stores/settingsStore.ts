@@ -22,6 +22,7 @@ function applyTheme(theme: 'light' | 'dark' | 'system'): void {
     window.matchMedia('(prefers-color-scheme: dark)').matches;
   const isDark = theme === 'dark' || (theme === 'system' && prefersDark);
   root.classList.toggle('dark', isDark);
+  try { localStorage.setItem('mf_theme', theme); } catch (_) {}
 }
 
 interface SettingsState {
