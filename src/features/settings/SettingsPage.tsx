@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { AccountsSection } from './AccountsSection';
 import { FloorItemsSection } from './FloorItemsSection';
+import { OverflowRatiosSection } from './OverflowRatiosSection';
+import { TaxBufferSection } from './TaxBufferSection';
 
 type SettingsSection = 'accounts' | 'floor-items' | 'overflow-ratios' | 'tax-buffer';
 
@@ -39,12 +41,8 @@ export function SettingsPage() {
       {/* Section content — placeholders replaced in plans 02, 03, 04 */}
       {activeSection === 'accounts' && <AccountsSection />}
       {activeSection === 'floor-items' && <FloorItemsSection />}
-      {activeSection === 'overflow-ratios' && (
-        <div className="text-sm text-muted-foreground">Overflow ratios configuration coming soon.</div>
-      )}
-      {activeSection === 'tax-buffer' && (
-        <div className="text-sm text-muted-foreground">Tax & buffer configuration coming soon.</div>
-      )}
+      {activeSection === 'overflow-ratios' && <OverflowRatiosSection />}
+      {activeSection === 'tax-buffer' && <TaxBufferSection />}
     </div>
   );
 }
