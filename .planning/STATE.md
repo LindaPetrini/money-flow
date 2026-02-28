@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** Phase 1 — Foundation
+**Current focus:** Phase 3 — Core UI
 
 ## Current Position
 
-Phase: 1 of 7 (Foundation)
-Plan: 3 of 3 complete in current phase
-Status: Phase 1 complete — all 3 plans executed and verified
-Last activity: 2026-02-28 — Phase 1 executed (scaffold + cents TDD + storage/stores)
+Phase: 3 of 7 (Core UI)
+Plan: 1 of N complete in current phase (03-01 bootstrap/seed complete)
+Status: Phase 3 in progress — 03-01 executed (default config seed + seedIfEmpty init)
+Last activity: 2026-02-28 — Phase 3 Plan 01 executed (defaultConfig + bootstrap)
 
-Progress: [██░░░░░░░░] 14% (1/7 phases)
+Progress: [███░░░░░░░] ~30% (phases 1+2 complete, phase 3 started)
 
 ## Performance Metrics
 
@@ -63,6 +63,8 @@ Recent decisions affecting current work:
 - [Init]: Allocation engine (`domain/allocationEngine.ts`) must have zero React imports — pure TS, testable in Node
 - [Phase 02-allocation-engine]: Buffer deficit used for mode detection only — no buffer top-up move generated in v1
 - [Phase 02-allocation-engine]: Empty overflowRatios produce an unallocated move rather than silently dropping cents
+- [Phase 03-core-ui 03-01]: overflowRatios.length === 0 used as proxy for unconfigured settings in seedIfEmpty (not taxAccountId)
+- [Phase 03-core-ui 03-01]: seedIfEmpty placed after Promise.all store load so initialized guards pass before any writes
 
 ### Pending Todos
 
@@ -75,7 +77,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 1 fully executed. 3/3 plans complete. Ready for Phase 2 planning.
+Stopped at: Phase 3 Plan 01 (03-01) complete — default config seed + seedIfEmpty wired into init.
 Resume file: None
 
 ### Execution Notes (Phase 1)
