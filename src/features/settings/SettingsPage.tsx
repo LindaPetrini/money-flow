@@ -3,14 +3,16 @@ import { AccountsSection } from './AccountsSection';
 import { FloorItemsSection } from './FloorItemsSection';
 import { OverflowRatiosSection } from './OverflowRatiosSection';
 import { TaxBufferSection } from './TaxBufferSection';
+import { CsvAiSection } from './CsvAiSection';
 
-type SettingsSection = 'accounts' | 'floor-items' | 'overflow-ratios' | 'tax-buffer';
+type SettingsSection = 'accounts' | 'floor-items' | 'overflow-ratios' | 'tax-buffer' | 'csv-ai';
 
 const SECTIONS: { id: SettingsSection; label: string }[] = [
   { id: 'accounts',         label: 'Accounts' },
   { id: 'floor-items',      label: 'Floor Items' },
   { id: 'overflow-ratios',  label: 'Overflow Ratios' },
   { id: 'tax-buffer',       label: 'Tax & Buffer' },
+  { id: 'csv-ai',           label: 'CSV & AI' },
 ];
 
 export function SettingsPage() {
@@ -43,6 +45,7 @@ export function SettingsPage() {
       {activeSection === 'floor-items' && <FloorItemsSection />}
       {activeSection === 'overflow-ratios' && <OverflowRatiosSection />}
       {activeSection === 'tax-buffer' && <TaxBufferSection />}
+      {activeSection === 'csv-ai' && <CsvAiSection />}
     </div>
   );
 }
