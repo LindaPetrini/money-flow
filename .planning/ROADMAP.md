@@ -45,11 +45,11 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   3. `MerchantEntry` type and `PersistedMerchants` type alias exist in `domain.ts` and `persistence.ts`
   4. `merchantStore.ts` is implemented with load/upsert/lookup API, guarded with `initialized` check to prevent empty-state overwrites, and wired into `bootstrap.ts`
   5. `npm run build` succeeds and `npm test` passes with zero regressions
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 11-01: Domain types — `AllocationRecord.source`, `Settings.theme`, `MerchantEntry`, `PersistedMerchants`; read-time migration in `allocationStore`
-- [ ] 11-02: `merchantStore.ts` implementation + `bootstrap.ts` wiring; `applyTheme()` side-effect in `settingsStore`
+- [ ] 11-01-PLAN.md — Domain types: `AllocationRecord.source`, `Settings.theme`, `MerchantEntry`, `PersistedMerchants`; read-time migration in `allocationStore`
+- [ ] 11-02-PLAN.md — `merchantStore.ts` implementation + `main.tsx` wiring; `applyTheme()` side-effect in `settingsStore`
 
 ### Phase 12: Quick Wins
 **Goal**: Users can switch dark mode, enter a client name on invoices, see that name in history, and filter/search history — all without any AI interaction
