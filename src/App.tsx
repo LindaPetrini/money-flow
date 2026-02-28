@@ -1,7 +1,11 @@
+import { useState } from 'react';
 import { fsaDriver } from '@/lib/storage/storage';
 import { useAccountStore } from '@/stores/accountStore';
 import { useAllocationStore } from '@/stores/allocationStore';
 import { useSettingsStore } from '@/stores/settingsStore';
+import Dashboard from '@/features/dashboard/Dashboard';
+import { InvoicePage } from '@/features/invoice/InvoicePage';
+import { HistoryPage } from '@/features/history/HistoryPage';
 
 interface AppProps {
   needsFsaPrompt: boolean;
@@ -9,42 +13,66 @@ interface AppProps {
 }
 
 export default function App({ needsFsaPrompt, storageMode }: AppProps) {
-  const accounts = useAccountStore(s => s.accounts);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'invoice' | 'history'>('dashboard');
 
   const handleGrantAccess = async () => {
     if (!fsaDriver) return;
     await fsaDriver.requestPermission();
-    // Re-load stores now that FSA is active
     await Promise.all([
       useAccountStore.getState().loadAccounts(),
       useAllocationStore.getState().loadHistory(),
       useSettingsStore.getState().loadSettings(),
     ]);
-    // Force re-render — simple approach for Phase 1
     window.location.reload();
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-8">
-      <h1 className="text-2xl font-semibold mb-4">Money Flow</h1>
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Top bar */}
+      <header className="border-b border-border px-4 py-3 flex items-center justify-between">
+        <span className="font-semibold text-sm">Money Flow</span>
+        <span className="text-xs text-muted-foreground">
+          {storageMode === 'idb' ? 'Browser storage (data is browser-local)' : 'File storage'}
+        </span>
+      </header>
 
-      <p className="text-sm text-muted-foreground mb-4">
-        Storage: {storageMode === 'fsa' ? 'File System (FSA)' : 'Browser (IndexedDB)'}
-        {storageMode === 'idb' && ' — your data is browser-local'}
-      </p>
-
+      {/* FSA prompt — shown above tabs when permission needed */}
       {needsFsaPrompt && (
-        <button
-          onClick={handleGrantAccess}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm mb-4"
-        >
-          Grant access to your data folder
-        </button>
+        <div className="bg-muted px-4 py-2 text-sm flex items-center gap-3">
+          <span className="text-muted-foreground">Grant folder access to use file storage:</span>
+          <button
+            onClick={handleGrantAccess}
+            className="px-3 py-1 bg-primary text-primary-foreground rounded text-xs font-medium"
+          >
+            Grant access
+          </button>
+        </div>
       )}
 
-      <p className="text-sm text-muted-foreground">
-        Accounts loaded: {accounts.length}
-      </p>
+      {/* Tab navigation */}
+      <nav className="border-b border-border px-4 flex gap-6">
+        {(['dashboard', 'invoice', 'history'] as const).map(tab => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={[
+              'py-3 text-sm capitalize transition-colors',
+              activeTab === tab
+                ? 'font-semibold border-b-2 border-foreground'
+                : 'text-muted-foreground hover:text-foreground',
+            ].join(' ')}
+          >
+            {tab === 'invoice' ? 'New Invoice' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
+      </nav>
+
+      {/* Tab content */}
+      <main>
+        {activeTab === 'dashboard' && <Dashboard />}
+        {activeTab === 'invoice' && <InvoicePage />}
+        {activeTab === 'history' && <HistoryPage />}
+      </main>
     </div>
   );
 }
