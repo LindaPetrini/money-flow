@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-02-27)
 ## Current Position
 
 Phase: 3 of 7 (Core UI)
-Plan: 1 of N complete in current phase (03-01 bootstrap/seed complete)
-Status: Phase 3 in progress — 03-01 executed (default config seed + seedIfEmpty init)
-Last activity: 2026-02-28 — Phase 3 Plan 01 executed (defaultConfig + bootstrap)
+Plan: 2 of N complete in current phase (03-01 bootstrap/seed, 03-02 dashboard components)
+Status: Phase 3 in progress — 03-02 executed (AccountCard, ModeBadge, Dashboard components)
+Last activity: 2026-02-28 — Phase 3 Plan 02 executed (dashboard UI components with status indicators)
 
-Progress: [███░░░░░░░] ~30% (phases 1+2 complete, phase 3 started)
+Progress: [████░░░░░░] ~35% (phases 1+2 complete, phase 3 plans 01+02 done)
 
 ## Performance Metrics
 
@@ -65,6 +65,8 @@ Recent decisions affecting current work:
 - [Phase 02-allocation-engine]: Empty overflowRatios produce an unallocated move rather than silently dropping cents
 - [Phase 03-core-ui 03-01]: overflowRatios.length === 0 used as proxy for unconfigured settings in seedIfEmpty (not taxAccountId)
 - [Phase 03-core-ui 03-01]: seedIfEmpty placed after Promise.all store load so initialized guards pass before any writes
+- [Phase 03-core-ui 03-02]: AccountCard receives onBalanceChange as prop rather than calling useAccountStore directly — keeps card pure and testable
+- [Phase 03-core-ui 03-02]: Status thresholds — at-target >=100%, near-target >=80%, below-target <80% of targetCents
 
 ### Pending Todos
 
@@ -77,7 +79,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 3 Plan 01 (03-01) complete — default config seed + seedIfEmpty wired into init.
+Stopped at: Phase 3 Plan 02 (03-02) complete — AccountCard, ModeBadge, Dashboard components built; build passes.
 Resume file: None
 
 ### Execution Notes (Phase 1)
