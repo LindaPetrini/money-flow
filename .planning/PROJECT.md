@@ -20,23 +20,23 @@ When an invoice lands, tell the user exactly where every euro goes — so they n
 - ✓ User can edit account balances inline (manual update) — Phase 3 (verified Phase 8)
 - ✓ Visual indicator shows accounts at/near/below target — Phase 3 (verified Phase 8)
 - ✓ "Done" button confirms a set of moves, updates balances atomically, logs to history — Phase 3 (verified Phase 8)
+- ✓ User can configure budget buckets (name, amount/percentage, destination account, priority) — Phase 4 (verified Phase 9)
+- ✓ Default allocation: 35% taxes, remainder split across configurable everyday/fun/savings/investing buckets — Phase 4 (verified Phase 9)
+- ✓ Floor items support optional expiry dates (auto-deactivate) — Phase 4 (verified Phase 9)
+- ✓ User can edit floor items, overflow ratios, account targets, and Wise buffer target — Phase 4 (verified Phase 9)
+- ✓ Stabilize mode: ordered instructions to cover uncovered floor items in priority order — Phase 2, floor coverage bug fixed Phase 10
+- ✓ Distribute mode: surplus split instructions by user-defined ratios — Phase 2
+- ✓ History log of all past allocations (date, invoice, mode, all moves made) — Phase 5
+- ✓ User can upload CSV expense history (6+ months) for AI-powered spending analysis — Phase 6
+- ✓ AI analysis suggests bucket splits based on actual spending patterns — Phase 6
+- ✓ Every allocation decision is transparent: calculation, rule, and reason per move — Phase 2–3
+- ✓ AI suggestions shown with reasoning behind them — Phase 6
+- ✓ App runs locally in the browser (no server required) — Phase 1
+- ✓ Open source — publishable on GitHub, easy to run with `npm start` — Phase 1
 
 ### Active
 
-- [ ] Stabilize mode: ordered instructions to cover uncovered floor items in priority order
-- [ ] Distribute mode: surplus split instructions by user-defined ratios
-- [ ] User can configure budget buckets (name, amount/percentage, destination account, priority)
-- [ ] Default allocation: 35% taxes, remainder split across configurable everyday/fun/savings/investing buckets
-- [ ] User can upload CSV expense history (6+ months) for AI-powered spending analysis
-- [ ] AI analysis suggests bucket splits based on actual spending patterns (everyday vs fun vs one-off/travel)
-- [ ] History log of all past allocations (date, invoice, mode, all moves made)
-- [ ] "New Month" reset: clears floor coverage toggles, preserves balances and history
-- [ ] Floor items support optional expiry dates (auto-deactivate)
-- [ ] User can edit floor items, overflow ratios, account targets, and Wise buffer target
-- [ ] Every allocation decision is transparent: each move shows the exact calculation, rule applied, and reason (e.g. "37% of €2,000 invoice = €740 → Isybank (tax rule)")
-- [ ] AI suggestions (from CSV analysis) are always shown with the reasoning behind them, not just a number — user can see what pattern was detected and why the split was suggested
-- [ ] App runs locally in the browser (no server required)
-- [ ] Open source — publishable on GitHub, easy to run with `npm start`
+(None — all v1.0 requirements shipped)
 
 ### Out of Scope
 
@@ -96,7 +96,8 @@ Previous implementation attempt (Phase 1 complete) established the core data mod
 | Two modes auto-detected (not user toggle) | Removes decision fatigue, always correct behavior | Implemented Phase 2, UI Phase 3 |
 | No backend / fully client-side | Open source, easy to run locally, privacy-preserving | Confirmed working Phase 6 (Anthropic direct browser API) |
 | Vite + React 19 + TypeScript + Tailwind v4 + shadcn/ui | Industry standard stack, fast DX, good component library | Implemented Phase 1 |
-| ALLOC-02 floor coverage defect deferred | `handleDone()` marks `destinationAccountId` instead of `floorItemId` — does not affect atomicity or allocation correctness | Deferred to Phase 10 (Fix Integration Defects) |
+| ALLOC-02 floor coverage defect deferred | `handleDone()` marks `destinationAccountId` instead of `floorItemId` — does not affect atomicity or allocation correctness | Fixed Phase 10 — `floorItemId?: string` added to `AllocationMove`, stabilize() populates it, handleDone() uses it |
+| INFRA-04 first-run detection | `isFirstRun = needsFsaPrompt && accounts.length === 0` caused returning Chrome users with no accounts to see onboarding incorrectly | Fixed Phase 10 — `isFirstRun = needsFsaPrompt` only (removed accounts.length coupling) |
 
 ---
-*Last updated: 2026-02-28 after Phase 8 (verify-core-ui)*
+*Last updated: 2026-02-28 after Phase 10 (fix-integration-defects) — v1.0 milestone complete*

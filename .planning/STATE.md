@@ -18,22 +18,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** Phase 9 — verify-configuration
+**Current focus:** v1.0 milestone complete — all 10 phases done
 
 ## Current Position
 
-Phase: 9 of 10 (verify-configuration) — Ready to plan
-Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI), 7 (Hardening), 8 (Verify Core UI)
-Last completed: Phase 8 — verify-core-ui (all 8 INVOICE/DASH requirements SATISFIED, 03-VERIFICATION.md created)
-Last activity: 2026-02-28 — Phase 8 execution and transition complete
+Phase: 10/10 — COMPLETE (v1.0 milestone finished)
+Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History), 6 (CSV + AI), 7 (Hardening), 8 (Verify Core UI), 9 (Verify Configuration), 10 (Fix Integration Defects)
+Last completed: Phase 10 — fix-integration-defects (ALLOC-02 floor coverage fixed, INFRA-04 first-run fixed, Phase 02 VERIFICATION.md promoted to passed)
+Last activity: 2026-02-28 — v1.0 milestone complete
 
-Progress: [████████████████████] 22/22 plans (100%)
+Progress: [████████████████████] 26/26 plans (100%)
 
 ## RESUME INSTRUCTIONS
 
-**Next: Phase 9 (verify-configuration)** — formally verify CONFIG-01 through CONFIG-07 against Phase 4 configuration implementation.
+**v1.0 milestone complete.** All requirements shipped and verified.
 
-**Build state:** Clean — `npm run build` passes (1878 modules), 114 tests passing (5 test files)
+**Build state:** Clean — `npm run build` passes (1878 modules), 116 tests passing (5 test files)
 **No blockers**
 
 ## Performance Metrics
@@ -101,7 +101,7 @@ Recent decisions affecting current work:
 - [Phase 07-hardening]: set() before try/catch in store writes — in-memory state preserved on FSA permission loss
 - [Phase 07-hardening]: Module-level setter pattern bridges Zustand stores to React context without hooks in store code
 - [Phase 07-hardening 07-02]: handleGrantAccess simplified — reload is sufficient, init() in main.tsx re-runs all store loads
-- [Phase 07-hardening 07-02]: isFirstRun = needsFsaPrompt && accounts.length === 0 distinguishes genuine first-run from returning user with lapsed permission
+- [Phase 07-hardening 07-02]: isFirstRun = needsFsaPrompt && accounts.length === 0 (original logic — superseded by Phase 10 fix)
 - [Phase 07-hardening 07-02]: IDB banner gated on fsaDriver === null to avoid false positive during FSA permission-pending flow
 - [Phase 07-hardening]: StorageSection reads fsaDriver singleton directly (no props) — consistent with App.tsx pattern, avoids prop-drilling
 - [Phase 07-hardening]: AbortError from cancelled directory picker caught silently — no reload or error shown to user
@@ -119,7 +119,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 8 complete, transitioned to Phase 9 (verify-configuration) — ready to plan
+Stopped at: v1.0 milestone complete — all 10 phases done, all 26 plans executed, 116 tests passing
 Resume file: None
 
 ### Execution Notes (Phase 1)
