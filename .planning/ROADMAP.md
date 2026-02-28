@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Allocation Engine** - Pure TypeScript domain logic (Stabilize/Distribute modes) with full test coverage (completed 2026-02-28)
 - [ ] **Phase 3: Core UI** - Dashboard + invoice entry workflow + allocation result view + Done confirmation
 - [ ] **Phase 4: Configuration** - Floor items, overflow ratios, tax bucket, accounts, and default setup
-- [ ] **Phase 5: History** - Allocation history log view with monthly reset
+- [x] **Phase 5: History** - Allocation history log view with monthly reset (completed 2026-02-28)
 - [ ] **Phase 6: CSV Import & AI Analysis** - CSV upload, parsing, AI categorization, and suggestion UI
 - [ ] **Phase 7: Hardening** - Production-quality error recovery, FSA re-prompt UX, onboarding polish
 
@@ -124,6 +124,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. Allocation Engine | 3/3 | Complete   | 2026-02-28 |
 | 3. Core UI | 0/? | Not started | - |
 | 4. Configuration | 2/4 | In Progress|  |
-| 5. History | 0/? | Not started | - |
+| 5. History | 1/1 | Complete   | 2026-02-28 |
 | 6. CSV Import & AI Analysis | 0/? | Not started | - |
 | 7. Hardening | 0/? | Not started | - |

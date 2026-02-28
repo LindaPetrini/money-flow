@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-02-28T15:35:00.000Z"
+last_updated: "2026-02-28T15:59:07Z"
 progress:
   total_phases: 7
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 18
-  completed_plans: 18
+  completed_plans: 19
 ---
 
 # Project State
@@ -18,29 +18,26 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** Phase 5 — History (NEXT TO EXECUTE)
+**Current focus:** Phase 6 — CSV + AI (NEXT TO EXECUTE)
 
 ## Current Position
 
-Phase: 5 of 7 (History) — NEXT
-Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration)
-Last completed: Phase 4 — Configuration (4/4 plans done: settings tab, accounts CRUD, floor items CRUD, overflow ratios + tax/buffer)
-Last activity: 2026-02-28 — Phase 4 Plan 04 executed (overflow ratios, tax/buffer settings)
+Phase: 6 of 7 (CSV + AI) — NEXT
+Phases complete: 1 (Foundation), 2 (Allocation Engine), 3 (Core UI), 4 (Configuration), 5 (History)
+Last completed: Phase 5 — History (1/1 plan done: full HistoryPage implementation)
+Last activity: 2026-02-28 — Phase 5 Plan 01 executed (HistoryPage with accordion, move details, New Month reset)
 
-Progress: [████████████░░░░░░░░] ~57% (4/7 phases complete)
+Progress: [██████████████░░░░░░] ~71% (5/7 phases complete)
 
 ## RESUME INSTRUCTIONS
 
-**Next step:** Plan + execute Phase 5 (History)
-- Requirements: HIST-01, HIST-02, HIST-03
-- Goal: History list (most recent first), expandable entries, "New Month" reset
-- HistoryPage.tsx exists as placeholder at `src/features/history/HistoryPage.tsx`
-- History store is at `src/stores/allocationStore.ts` (uses `useAllocationStore`)
-- AllocationRecord type in `src/types/domain.ts`
-- Then Phase 6 (CSV + AI), then Phase 7 (Hardening)
+**Next step:** Plan + execute Phase 6 (CSV + AI)
+- Note Phase 6 CORS concern: verify `anthropic-dangerous-direct-browser-access` header behavior before writing AI integration code
+- May need lightweight proxy if direct browser access is blocked
+- Then Phase 7 (Hardening)
 
 **Build state:** Clean — `npm run build` passes, 75 tests passing (4 test files)
-**No blockers** except Phase 6 CORS concern (see Blockers below)
+**No blockers** except Phase 6 CORS concern for Anthropic browser API (see Blockers below)
 
 ## Performance Metrics
 
@@ -62,6 +59,7 @@ Progress: [████████████░░░░░░░░] ~57% (4
 *Updated after each plan completion*
 | Phase 02-allocation-engine P03 | 10 | 2 tasks | 2 files |
 | Phase 04-configuration P02 | 5 | 2 tasks | 2 files |
+| Phase 05-history P01 | 1 | 2 tasks | 1 file |
 
 ## Accumulated Context
 
@@ -84,6 +82,9 @@ Recent decisions affecting current work:
 - [Phase 03-core-ui 03-04]: Plain button-based tab nav over shadcn Tabs — avoids new component dependency for a simple two-state toggle
 - [Phase 03-core-ui 03-04]: Dashboard uses default export; InvoicePage uses named export — App.tsx imports adjusted accordingly
 - [Phase 04-configuration]: targetStr string field in draft avoids float storage mid-edit; parseCents called only on save
+- [Phase 05-history 05-01]: Accordion state uses useState<string|null>(null) — single open entry, no shadcn Accordion dependency
+- [Phase 05-history 05-01]: History renders directly from record.moves — never re-invokes allocationEngine
+- [Phase 05-history 05-01]: formatHistoryDate uses split('-').map(Number) then new Date(year, month-1, day) to avoid UTC midnight shift
 
 ### Pending Todos
 
@@ -96,7 +97,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 3 Plan 04 (03-04) complete — three-tab navigation shell, HistoryPage placeholder; build passes, all 75 tests pass.
+Stopped at: Phase 5 Plan 01 (05-01) complete — full HistoryPage with accordion, move details, New Month reset; build passes, all 75 tests pass.
 Resume file: None
 
 ### Execution Notes (Phase 1)

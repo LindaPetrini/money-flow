@@ -52,9 +52,9 @@
 
 ### History & Monthly Reset (HIST)
 
-- [ ] **HIST-01**: History log records every confirmed allocation: date, invoice details (amount, currency, EUR equivalent), mode used, and every move made
-- [ ] **HIST-02**: User can view history list (most recent first) and expand any entry to see full move details
-- [ ] **HIST-03**: "New Month" reset clears floor coverage toggles (marks all floor items as uncovered) while preserving account balances, history, and configuration
+- [x] **HIST-01**: History log records every confirmed allocation: date, invoice details (amount, currency, EUR equivalent), mode used, and every move made
+- [x] **HIST-02**: User can view history list (most recent first) and expand any entry to see full move details
+- [x] **HIST-03**: "New Month" reset clears floor coverage toggles (marks all floor items as uncovered) while preserving account balances, history, and configuration
 
 ### CSV Import & AI Analysis (CSV)
 
@@ -135,9 +135,9 @@
 | CONFIG-05 | Phase 4 | Pending |
 | CONFIG-06 | Phase 4 | Pending |
 | CONFIG-07 | Phase 4 | Pending |
-| HIST-01 | Phase 5 | Pending |
-| HIST-02 | Phase 5 | Pending |
-| HIST-03 | Phase 5 | Pending |
+| HIST-01 | Phase 5 | Complete |
+| HIST-02 | Phase 5 | Complete |
+| HIST-03 | Phase 5 | Complete |
 | CSV-01 | Phase 6 | Pending |
 | CSV-02 | Phase 6 | Pending |
 | CSV-03 | Phase 6 | Pending |
