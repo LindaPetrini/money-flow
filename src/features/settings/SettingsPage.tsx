@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { AccountsSection } from './AccountsSection';
+import { FloorItemsSection } from './FloorItemsSection';
 
 type SettingsSection = 'accounts' | 'floor-items' | 'overflow-ratios' | 'tax-buffer';
 
@@ -35,9 +37,7 @@ export function SettingsPage() {
       </nav>
 
       {/* Section content — placeholders replaced in plans 02, 03, 04 */}
-      {activeSection === 'accounts' && (
-        <div className="text-sm text-muted-foreground">Accounts configuration coming soon.</div>
-      )}
+      {activeSection === 'accounts' && <AccountsSection />}
       {activeSection === 'floor-items' && (
         <div className="text-sm text-muted-foreground">Floor items configuration coming soon.</div>
       )}
