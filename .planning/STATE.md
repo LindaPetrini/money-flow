@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** Phase 3 — Core UI
+**Current focus:** Phase 3 — Core UI (complete)
 
 ## Current Position
 
-Phase: 3 of 7 (Core UI)
-Plan: 2 of N complete in current phase (03-01 bootstrap/seed, 03-02 dashboard components)
-Status: Phase 3 in progress — 03-02 executed (AccountCard, ModeBadge, Dashboard components)
-Last activity: 2026-02-28 — Phase 3 Plan 02 executed (dashboard UI components with status indicators)
+Phase: 3 of 7 (Core UI) — COMPLETE
+Plan: 4 of 4 complete in current phase (03-01 bootstrap/seed, 03-02 dashboard, 03-03 invoice, 03-04 navigation)
+Status: Phase 3 complete — three-tab navigation shell wired; app usable end-to-end
+Last activity: 2026-02-28 — Phase 3 Plan 04 executed (three-tab navigation, HistoryPage placeholder)
 
-Progress: [████░░░░░░] ~35% (phases 1+2 complete, phase 3 plans 01+02 done)
+Progress: [████████░░] ~55% (phases 1+2 complete, phase 3 fully done)
 
 ## Performance Metrics
 
@@ -67,6 +67,8 @@ Recent decisions affecting current work:
 - [Phase 03-core-ui 03-01]: seedIfEmpty placed after Promise.all store load so initialized guards pass before any writes
 - [Phase 03-core-ui 03-02]: AccountCard receives onBalanceChange as prop rather than calling useAccountStore directly — keeps card pure and testable
 - [Phase 03-core-ui 03-02]: Status thresholds — at-target >=100%, near-target >=80%, below-target <80% of targetCents
+- [Phase 03-core-ui 03-04]: Plain button-based tab nav over shadcn Tabs — avoids new component dependency for a simple two-state toggle
+- [Phase 03-core-ui 03-04]: Dashboard uses default export; InvoicePage uses named export — App.tsx imports adjusted accordingly
 
 ### Pending Todos
 
@@ -79,7 +81,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Phase 3 Plan 02 (03-02) complete — AccountCard, ModeBadge, Dashboard components built; build passes.
+Stopped at: Phase 3 Plan 04 (03-04) complete — three-tab navigation shell, HistoryPage placeholder; build passes, all 75 tests pass.
 Resume file: None
 
 ### Execution Notes (Phase 1)
