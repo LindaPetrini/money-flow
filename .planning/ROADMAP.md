@@ -78,12 +78,12 @@ Plans:
   3. After Q&A is complete, the AI detects recurring expenses from the CSV and presents them as suggested floor items; floor detection receives Q&A context so already-clarified transactions are not re-flagged
   4. Confirming a floor item suggestion pre-fills the floor item form in the Settings page (name, amount, destination account) so the user only needs to review and save
   5. The entire CSV session makes at most 2 Anthropic API calls (one for transaction classification/Q&A batch, one for floor detection) regardless of how many transactions are in the file
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 13-01: `anthropicClient.ts` additions — `callUncertainTransactionDetection()` and `callFloorItemDetection()`; Q&A state machine (`QAPhase` discriminated union) in `CsvAiSection`
-- [ ] 13-02: Merchant memory — pre-classification on import, Q&A answers persisted to `merchantStore`, `TransactionQACard` UI component
-- [ ] 13-03: Floor item detection — detect after Q&A, pass clarification context, `onFloorItemSuggested` callback, pre-fill in `SettingsPage`
+- [ ] 13-01-PLAN.md — `anthropicClient.ts`: `callCombinedAnalysis()` (combined bucket + uncertain transaction schema), `callFloorDetection()` (floor suggestions with Q&A context); new TypeScript types; `callAnthropicAPI` marked deprecated
+- [ ] 13-02-PLAN.md — `CsvAiSection` state machine extension: merchant pre-classification, `CsvAiPhase` discriminant, Q&A cards (description/date/amount/context/bucket selector), `upsertMerchant` on Done with Q&A
+- [ ] 13-03-PLAN.md — Floor detection trigger after Q&A; floor suggestion cards; `pendingFloorItem` lifted state in `SettingsPage`; `FloorItemsSection` pre-fill via `useEffect`
 
 ## Progress
 
@@ -100,5 +100,5 @@ Plans:
 | 9. Verify Configuration | v1.0 | 1/1 | Complete | 2026-02-28 |
 | 10. Fix Integration Defects | v1.0 | 3/3 | Complete | 2026-02-28 |
 | 11. Schema Foundation | v1.1 | 2/2 | Complete | 2026-02-28 |
-| 12. Quick Wins | 3/3 | Complete    | 2026-02-28 | - |
+| 12. Quick Wins | v1.1 | 3/3 | Complete    | 2026-02-28 |
 | 13. AI Layer | v1.1 | 0/3 | Not started | - |
