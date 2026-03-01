@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: AI-Powered Insights
-status: unknown
-last_updated: "2026-03-01T11:43:49.580Z"
+status: milestone_complete
+last_updated: "2026-03-01"
 progress:
   total_phases: 13
   completed_phases: 13
@@ -15,17 +15,16 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-28)
+See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** When an invoice lands, tell the user exactly where every euro goes — so they never have to think about it in the moment.
-**Current focus:** v1.1 AI-Powered Insights — Phase 11 ready to plan
+**Current focus:** Planning next milestone (v1.2)
 
 ## Current Position
 
-Phase: 13 of 13 (AI Layer)
-Plan: 3 of 3 — COMPLETE
-Status: Complete
-Last activity: 2026-03-01 — 13-03 complete; Phase 13 AI Layer finished — floor detection wired end-to-end, pendingFloorItem pre-fills FloorItemsSection
+Milestone v1.1 AI-Powered Insights — COMPLETE (shipped 2026-03-01)
+All 13 phases complete. All 34 plans complete.
+Last activity: 2026-03-01 — v1.1 milestone archived; ready for /gsd:new-milestone
 
 Progress: [██████████] 100% (34/34 plans complete)
 
