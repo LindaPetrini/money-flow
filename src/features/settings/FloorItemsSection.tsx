@@ -13,6 +13,17 @@ type FloorItemDraft = {
   expiryDate: string;     // '' = no expiry
 };
 
+type PendingFloorItem = {
+  name: string;
+  amountStr: string;
+  destinationAccountId: string;
+};
+
+interface FloorItemsSectionProps {
+  pendingFloorItem?: PendingFloorItem | null;
+  onPendingConsumed?: () => void;
+}
+
 const EMPTY_DRAFT: FloorItemDraft = {
   name: '',
   amountStr: '',
@@ -21,7 +32,10 @@ const EMPTY_DRAFT: FloorItemDraft = {
   expiryDate: '',
 };
 
-export function FloorItemsSection() {
+export function FloorItemsSection({
+  pendingFloorItem,
+  onPendingConsumed,
+}: FloorItemsSectionProps = {}) {
   const floorItems = useSettingsStore(s => s.settings.floorItems);
   const updateSettings = useSettingsStore(s => s.updateSettings);
   const accounts = useAccountStore(s => s.accounts);
@@ -33,6 +47,7 @@ export function FloorItemsSection() {
     ...EMPTY_DRAFT,
     destinationAccountId: accounts[0]?.id ?? '',
   });
+  const [pendingHighlight, setPendingHighlight] = useState(false);
 
   // Expiry auto-deactivation: run on every render cycle
   useEffect(() => {
@@ -49,6 +64,33 @@ export function FloorItemsSection() {
       updateSettings({ floorItems: updated });
     }
   }, [floorItems, updateSettings]);
+
+  // Pre-fill Add form when a floor suggestion is accepted from CsvAiSection (AIAN-06)
+  useEffect(() => {
+    if (!pendingFloorItem) return;
+
+    // Pre-fill the Add form with AI-suggested values
+    setNewItem({
+      name: pendingFloorItem.name,
+      amountStr: pendingFloorItem.amountStr,
+      priorityStr: String(floorItems.length + 1),  // next priority after existing
+      destinationAccountId:
+        pendingFloorItem.destinationAccountId ||
+        accounts[0]?.id ||
+        '',
+      expiryDate: '',
+    });
+    setShowAddForm(true);
+
+    // Clear the pending item in parent BEFORE any further state update
+    // This prevents the effect from re-firing (pendingFloorItem will be null next render)
+    onPendingConsumed?.();
+
+    // Brief ring highlight to draw attention to the pre-filled form
+    setPendingHighlight(true);
+    setTimeout(() => setPendingHighlight(false), 2000);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingFloorItem]);  // intentionally omit onPendingConsumed from deps (stable callback)
 
   const sorted = [...floorItems].sort((a, b) => a.priority - b.priority);
   const today = new Date().toISOString().slice(0, 10);
@@ -272,7 +314,10 @@ export function FloorItemsSection() {
 
       {/* Add form */}
       {showAddForm && (
-        <div className="flex flex-col gap-2 p-3 rounded border border-border border-dashed">
+        <div className={[
+          'flex flex-col gap-2 p-3 rounded border border-dashed',
+          pendingHighlight ? 'border-primary ring-2 ring-primary/30' : 'border-border',
+        ].join(' ')}>
           <div className="flex items-center gap-2 flex-wrap">
             <div className="flex items-center gap-1">
               <label className="text-xs text-muted-foreground">#</label>

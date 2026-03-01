@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { AccountsSection } from './AccountsSection';
 import { FloorItemsSection } from './FloorItemsSection';
 import { OverflowRatiosSection } from './OverflowRatiosSection';
@@ -7,6 +7,12 @@ import { CsvAiSection } from './CsvAiSection';
 import { StorageSection } from './StorageSection';
 
 type SettingsSection = 'accounts' | 'floor-items' | 'overflow-ratios' | 'tax-buffer' | 'csv-ai' | 'storage';
+
+type PendingFloorItem = {
+  name: string;
+  amountStr: string;      // e.g. "850.00" — string form parseCents expects
+  destinationAccountId: string;
+};
 
 const SECTIONS: { id: SettingsSection; label: string }[] = [
   { id: 'accounts',         label: 'Accounts' },
@@ -19,6 +25,17 @@ const SECTIONS: { id: SettingsSection; label: string }[] = [
 
 export function SettingsPage() {
   const [activeSection, setActiveSection] = useState<SettingsSection>('accounts');
+  const [pendingFloorItem, setPendingFloorItem] = useState<PendingFloorItem | null>(null);
+  const floorSectionRef = useRef<HTMLDivElement>(null);
+
+  const handleFloorItemSuggested = useCallback((item: PendingFloorItem) => {
+    setPendingFloorItem(item);
+    setActiveSection('floor-items');
+    // Delay scroll until FloorItemsSection has mounted (it's conditionally rendered)
+    setTimeout(() => {
+      floorSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }, []);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
@@ -44,10 +61,17 @@ export function SettingsPage() {
 
       {/* Section content — placeholders replaced in plans 02, 03, 04 */}
       {activeSection === 'accounts' && <AccountsSection />}
-      {activeSection === 'floor-items' && <FloorItemsSection />}
+      {activeSection === 'floor-items' && (
+        <div ref={floorSectionRef}>
+          <FloorItemsSection
+            pendingFloorItem={pendingFloorItem}
+            onPendingConsumed={() => setPendingFloorItem(null)}
+          />
+        </div>
+      )}
       {activeSection === 'overflow-ratios' && <OverflowRatiosSection />}
       {activeSection === 'tax-buffer' && <TaxBufferSection />}
-      {activeSection === 'csv-ai' && <CsvAiSection />}
+      {activeSection === 'csv-ai' && <CsvAiSection onFloorItemSuggested={handleFloorItemSuggested} />}
       {activeSection === 'storage' && <StorageSection />}
     </div>
   );
