@@ -26,7 +26,7 @@ Requirements for the AI-Powered Insights milestone. Each maps to roadmap phases.
 
 ### AI Analysis
 
-- [ ] **AIAN-01**: After CSV import, AI identifies transactions it cannot confidently categorize
+- [x] **AIAN-01**: After CSV import, AI identifies transactions it cannot confidently categorize
 - [ ] **AIAN-02**: User can provide context and assign a bucket for each uncertain transaction
 - [ ] **AIAN-03**: Merchant→bucket assignments persist across future imports
 - [ ] **AIAN-04**: Known merchants are pre-classified on future imports (skipping Q&A)
@@ -72,7 +72,7 @@ Note: Phase 11 (Schema Foundation) is pure infrastructure — it carries no v1.1
 | HIST-01 | Phase 12 | Pending |
 | HIST-02 | Phase 12 | Pending |
 | HIST-03 | Phase 12 | Pending |
-| AIAN-01 | Phase 13 | Pending |
+| AIAN-01 | Phase 13 | Complete |
 | AIAN-02 | Phase 13 | Pending |
 | AIAN-03 | Phase 13 | Pending |
 | AIAN-04 | Phase 13 | Pending |

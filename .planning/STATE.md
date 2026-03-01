@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 
 ## Current Position
 
-Phase: 11 of 13 (Schema Foundation)
-Plan: 2 of 2
-Status: Complete
-Last activity: 2026-02-28 — 11-02 complete; merchantStore created, applyTheme wired into settingsStore, loadMerchants in startup Promise.all
+Phase: 13 of 13 (AI Layer)
+Plan: 1 of 3
+Status: In Progress
+Last activity: 2026-03-01 — 13-01 complete; callCombinedAnalysis and callFloorDetection added to anthropicClient.ts
 
-Progress: [████████░░] 82% (28/34 plans complete)
+Progress: [████████░░] 85% (29/34 plans complete)
 
 ## Performance Metrics
 
@@ -70,6 +70,10 @@ Recent decisions affecting v1.1:
 - [Phase 11-02]: lookupMerchant has no initialized guard — returning undefined is correct "not found" behavior for both "not found" and "not loaded" states
 - [Phase 11-02]: upsertMerchant case-sensitive merchantName matching — Phase 13 determines normalization strategy
 - [Phase 11-02]: applyTheme is a private module-level helper, not exported from settingsStore
+- [Phase 13-01]: callCombinedAnalysis uses max_tokens: 4096 (combined prompt larger than legacy 2048 for callAnthropicAPI)
+- [Phase 13-01]: amountEur in UncertainTransaction is negative (expense); in FloorItemSuggestion is positive (absolute value) — sign convention made explicit in prompts
+- [Phase 13-01]: No minimum/maximum JSON schema constraints — Anthropic rejects them; only type: number used
+- [Phase 13-01]: callAnthropicAPI kept with @deprecated JSDoc — not deleted until plans 02/03 migration complete
 
 ### Pending Todos
 
@@ -81,6 +85,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-28
-Stopped at: Completed 11-02-PLAN.md — Phase 11 complete; merchantStore created, applyTheme wired, startup Promise.all updated
+Last session: 2026-03-01
+Stopped at: Completed 13-01-PLAN.md — callCombinedAnalysis and callFloorDetection added to anthropicClient.ts; 19 new tests; build passes
 Resume file: None
