@@ -2,8 +2,8 @@ import { useState, useRef } from 'react';
 import Papa from 'papaparse';
 import { parseCSVFile, detectBankFormat } from '@/lib/csvParser';
 import type { ParsedTransaction } from '@/lib/csvParser';
-import { callCombinedAnalysis, AnthropicAPIError } from '@/lib/anthropicClient';
-import type { AIAnalysisResult, UncertainTransaction } from '@/lib/anthropicClient';
+import { callCombinedAnalysis, callFloorDetection, AnthropicAPIError } from '@/lib/anthropicClient';
+import type { AIAnalysisResult, UncertainTransaction, FloorItemSuggestion } from '@/lib/anthropicClient';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useAccountStore } from '@/stores/accountStore';
 import { useMerchantStore } from '@/stores/merchantStore';
@@ -102,12 +102,12 @@ export function CsvAiSection({ onFloorItemSuggested }: CsvAiSectionProps = {}) {
   const [phase, setPhase] = useState<CsvAiPhase>('idle');
   const [autoClassifiedCount, setAutoClassifiedCount] = useState(0);
   const [qaCards, setQACards] = useState<QACardState[]>([]);
-  // allTransactionsRef tracks full transaction list for floor detection later (Plan 03)
+  // allTransactionsRef tracks full transaction list for floor detection (Plan 03)
   const [allTransactionsRef, setAllTransactionsRef] = useState<ParsedTransaction[]>([]);
 
-  // Suppress unused variable warning — Plan 03 will use onFloorItemSuggested and allTransactionsRef
-  void onFloorItemSuggested;
-  void allTransactionsRef;
+  // Floor detection state (AIAN-05, Plan 03)
+  const [floorSuggestions, setFloorSuggestions] = useState<FloorItemSuggestion[]>([]);
+  const [floorError, setFloorError] = useState<string | null>(null);
 
   // ---------------------------------------------------------------------------
   // API key handlers
@@ -257,10 +257,13 @@ export function CsvAiSection({ onFloorItemSuggested }: CsvAiSectionProps = {}) {
   };
 
   // ---------------------------------------------------------------------------
-  // Done with Q&A handler — persist answered cards to merchantStore (AIAN-03)
+  // Done with Q&A handler — persist answered cards (AIAN-03) + trigger floor detection (AIAN-05)
   // ---------------------------------------------------------------------------
 
   const handleDoneWithQA = async () => {
+    const key = localStorage.getItem('anthropic_api_key');
+
+    // Persist answered Q&A cards to merchantStore (AIAN-03)
     const storeState = useMerchantStore.getState();
     for (const card of qaCards) {
       if (card.answered && !card.skipped && card.bucketAccountId) {
@@ -272,9 +275,36 @@ export function CsvAiSection({ onFloorItemSuggested }: CsvAiSectionProps = {}) {
       }
     }
 
-    // Phase 13-03 will replace this with floor detection trigger.
-    // For now, transition to complete so the bucket suggestion cards remain visible.
-    setPhase('complete');
+    if (!key) {
+      setPhase('complete');
+      return;
+    }
+
+    // Build clarification context from answered cards for Call 2
+    const clarifications = qaCards
+      .filter(c => c.answered && !c.skipped && c.bucketAccountId)
+      .map(c => ({
+        merchantName: c.transaction.description,
+        bucketAccountId: c.bucketAccountId,
+        context: c.context || undefined,
+      }));
+
+    // Call 2: Floor item detection (AIAN-05)
+    setPhase('detecting-floors');
+    setFloorError(null);
+
+    try {
+      const result = await callFloorDetection(key, allTransactionsRef, clarifications);
+      setFloorSuggestions(result.suggestions);
+      setPhase('floor-suggestions');
+    } catch (e) {
+      if (e instanceof AnthropicAPIError) {
+        setFloorError(`Floor detection error ${e.status}: ${e.errorType}`);
+      } else {
+        setFloorError('Network error during floor detection — check connection');
+      }
+      setPhase('complete');  // degrade gracefully
+    }
   };
 
   // ---------------------------------------------------------------------------
@@ -510,7 +540,7 @@ export function CsvAiSection({ onFloorItemSuggested }: CsvAiSectionProps = {}) {
       )}
 
       {/* Merchant memory summary (AIAN-04) */}
-      {(phase === 'qa' || phase === 'complete') && autoClassifiedCount > 0 && (
+      {(phase === 'qa' || phase === 'detecting-floors' || phase === 'floor-suggestions' || phase === 'complete') && autoClassifiedCount > 0 && (
         <p className="text-sm text-muted-foreground">
           {autoClassifiedCount} merchant{autoClassifiedCount !== 1 ? 's' : ''} auto-classified from memory
         </p>
@@ -632,6 +662,81 @@ export function CsvAiSection({ onFloorItemSuggested }: CsvAiSectionProps = {}) {
             Continue to floor detection
           </button>
         </div>
+      )}
+
+      {/* Floor detection in-flight (AIAN-05) */}
+      {phase === 'detecting-floors' && (
+        <div className="flex items-center gap-2 py-2">
+          <svg className="animate-spin h-4 w-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+          </svg>
+          <span className="text-sm text-muted-foreground">Detecting recurring expenses…</span>
+        </div>
+      )}
+
+      {/* Floor item error */}
+      {floorError && (
+        <p className="text-sm text-destructive">{floorError}</p>
+      )}
+
+      {/* Floor suggestion cards (AIAN-05, AIAN-06) */}
+      {phase === 'floor-suggestions' && floorSuggestions.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="text-sm font-semibold">Suggested Floor Items</h2>
+          <p className="text-xs text-muted-foreground">
+            These expenses appear recurring. Accept to pre-fill the floor item form in Settings.
+          </p>
+
+          {floorSuggestions.map((suggestion, idx) => (
+            <div key={idx} className="border rounded-lg p-4 space-y-3 border-border">
+              {/* Suggestion header */}
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <p className="text-sm font-medium">{suggestion.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    €{Math.abs(suggestion.amountEur).toFixed(2)} &middot; {suggestion.frequency} &middot; {suggestion.confidence} confidence
+                  </p>
+                </div>
+              </div>
+
+              {/* AI reason (transparency) */}
+              <p className="text-xs text-muted-foreground italic">{suggestion.reason}</p>
+
+              {/* Accept / Skip */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    // Convert EUR float to amountStr (string with 2 decimal places)
+                    // FloorItemsSection.handleAdd will call parseCents(amountStr)
+                    const amountStr = String(Math.abs(suggestion.amountEur).toFixed(2));
+                    onFloorItemSuggested?.({
+                      name: suggestion.name,
+                      amountStr,
+                      destinationAccountId: '',  // FloorItemsSection will default to accounts[0]
+                    });
+                    // Remove this suggestion from the list
+                    setFloorSuggestions(prev => prev.filter((_, i) => i !== idx));
+                  }}
+                  className="px-3 py-1 rounded text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => setFloorSuggestions(prev => prev.filter((_, i) => i !== idx))}
+                  className="px-3 py-1 rounded text-xs font-medium border border-border hover:bg-muted"
+                >
+                  Skip
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* All floor suggestions dismissed */}
+      {phase === 'floor-suggestions' && floorSuggestions.length === 0 && (
+        <p className="text-sm text-muted-foreground">All floor item suggestions reviewed.</p>
       )}
 
       {/* Suggestion cards — full AI analysis results */}
