@@ -2,11 +2,12 @@ import { useState, useRef } from 'react';
 import Papa from 'papaparse';
 import { parseCSVFile, detectBankFormat } from '@/lib/csvParser';
 import type { ParsedTransaction } from '@/lib/csvParser';
-import { callAnthropicAPI, AnthropicAPIError } from '@/lib/anthropicClient';
-import type { AIAnalysisResult } from '@/lib/anthropicClient';
+import { callCombinedAnalysis, AnthropicAPIError } from '@/lib/anthropicClient';
+import type { AIAnalysisResult, UncertainTransaction } from '@/lib/anthropicClient';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useAccountStore } from '@/stores/accountStore';
-import type { OverflowRatio } from '@/types/domain';
+import { useMerchantStore } from '@/stores/merchantStore';
+import type { MerchantEntry, OverflowRatio } from '@/types/domain';
 
 interface FileStatus {
   name: string;
@@ -40,16 +41,42 @@ const BUCKET_KEYS: BucketKey[] = [
   'recurringFixed',
 ];
 
+// ---------------------------------------------------------------------------
+// Phase state machine types
+// ---------------------------------------------------------------------------
+
+interface CsvAiSectionProps {
+  onFloorItemSuggested?: (item: { name: string; amountStr: string; destinationAccountId: string }) => void;
+}
+
+type CsvAiPhase =
+  | 'idle'
+  | 'analysing'           // Call 1 in flight
+  | 'qa'                  // Q&A cards visible; user answering
+  | 'detecting-floors'    // Call 2 in flight (handled in Plan 03)
+  | 'floor-suggestions'   // Floor cards visible (handled in Plan 03)
+  | 'complete';
+
+// Q&A card state per uncertain transaction
+interface QACardState {
+  transaction: UncertainTransaction;
+  context: string;           // user text input
+  bucketAccountId: string;   // user selection — default to first overflow account
+  answered: boolean;         // true when user has selected a bucket
+  skipped: boolean;          // true if user explicitly skips
+}
+
 /**
  * CsvAiSection — CSV & AI settings sub-section.
  *
  * Scope (Plan 02): API key management, file upload, transaction preview,
- * "Analyse with AI" button. Suggestion card UI is wired in Plan 03.
+ * merchant pre-classification, Q&A cards, "Analyse with AI" button,
+ * and bucket suggestion cards driven by callCombinedAnalysis.
  *
  * API key stored only in localStorage('anthropic_api_key') — never in React state
  * beyond the masked display string.
  */
-export function CsvAiSection() {
+export function CsvAiSection({ onFloorItemSuggested }: CsvAiSectionProps = {}) {
   // Store hooks
   const settings = useSettingsStore(s => s.settings);
   const updateSettings = useSettingsStore(s => s.updateSettings);
@@ -70,6 +97,17 @@ export function CsvAiSection() {
   const [suggestions, setSuggestions] = useState<Record<BucketKey, SuggestionState> | null>(null);
   const [isApplying, setIsApplying] = useState(false);
   const [applySuccess, setApplySuccess] = useState(false);
+
+  // Phase state machine
+  const [phase, setPhase] = useState<CsvAiPhase>('idle');
+  const [autoClassifiedCount, setAutoClassifiedCount] = useState(0);
+  const [qaCards, setQACards] = useState<QACardState[]>([]);
+  // allTransactionsRef tracks full transaction list for floor detection later (Plan 03)
+  const [allTransactionsRef, setAllTransactionsRef] = useState<ParsedTransaction[]>([]);
+
+  // Suppress unused variable warning — Plan 03 will use onFloorItemSuggested and allTransactionsRef
+  void onFloorItemSuggested;
+  void allTransactionsRef;
 
   // ---------------------------------------------------------------------------
   // API key handlers
@@ -150,42 +188,93 @@ export function CsvAiSection() {
   };
 
   // ---------------------------------------------------------------------------
-  // Analyse handler
+  // Analyse handler — with merchant pre-classification (AIAN-04)
   // ---------------------------------------------------------------------------
 
   const handleAnalyse = async () => {
     const key = localStorage.getItem('anthropic_api_key');
     if (!key || transactions.length === 0) return;
-    setIsAnalysing(true);
-    setAnalysisError(null);
-    try {
-      const result = await callAnthropicAPI(key, transactions);
-      setAnalysisResult(result);
 
-      // Initialize per-card suggestion state
+    // Step 1: Merchant pre-classification (AIAN-04)
+    // lookupMerchant is synchronous — call outside render
+    const storeState = useMerchantStore.getState();
+    const autoClassified: Array<{ transaction: ParsedTransaction; merchant: MerchantEntry }> = [];
+    const toClassify: ParsedTransaction[] = [];
+
+    for (const t of transactions) {
+      const match = storeState.lookupMerchant(t.description);  // exact case-sensitive
+      if (match) autoClassified.push({ transaction: t, merchant: match });
+      else toClassify.push(t);
+    }
+
+    setAutoClassifiedCount(autoClassified.length);
+    setAllTransactionsRef(transactions);  // full list for floor detection later (Plan 03)
+
+    // Step 2: Call combined analysis with only unknown transactions (AIAN-01)
+    setPhase('analysing');
+    setAnalysisError(null);
+    setIsAnalysing(true);
+
+    try {
+      const result = await callCombinedAnalysis(key, toClassify);
+
+      // Initialize bucket suggestion cards (same pattern as before)
       const overflowAccounts = settings.overflowRatios.map(r => r.accountId);
       const initialSuggestions = Object.fromEntries(
-        BUCKET_KEYS.map((key, i) => [
-          key,
+        BUCKET_KEYS.map((k, i) => [
+          k,
           {
             accepted: false,
-            amountStr: String(Math.round(result[key].suggestedMonthlyAmountEur)),
+            amountStr: String(Math.round(result[k].suggestedMonthlyAmountEur)),
             accountId: overflowAccounts[i] ?? '',
           },
         ]),
       ) as Record<BucketKey, SuggestionState>;
-
       setSuggestions(initialSuggestions);
+      setAnalysisResult(result);
       setApplySuccess(false);
+
+      // Initialize Q&A cards from uncertain transactions (AIAN-02)
+      const initialCards: QACardState[] = result.uncertainTransactions.map(t => ({
+        transaction: t,
+        context: '',
+        bucketAccountId: overflowAccounts[0] ?? '',
+        answered: false,
+        skipped: false,
+      }));
+      setQACards(initialCards);
+      setPhase('qa');
     } catch (e) {
       if (e instanceof AnthropicAPIError) {
         setAnalysisError(`API error ${e.status}: ${e.errorType}`);
       } else {
         setAnalysisError('Network error — check your connection and retry');
       }
+      setPhase('idle');
     } finally {
       setIsAnalysing(false);
     }
+  };
+
+  // ---------------------------------------------------------------------------
+  // Done with Q&A handler — persist answered cards to merchantStore (AIAN-03)
+  // ---------------------------------------------------------------------------
+
+  const handleDoneWithQA = async () => {
+    const storeState = useMerchantStore.getState();
+    for (const card of qaCards) {
+      if (card.answered && !card.skipped && card.bucketAccountId) {
+        await storeState.upsertMerchant({
+          merchantName: card.transaction.description,  // exact case from CSV
+          bucketAccountId: card.bucketAccountId,
+          context: card.context || undefined,
+        });
+      }
+    }
+
+    // Phase 13-03 will replace this with floor detection trigger.
+    // For now, transition to complete so the bucket suggestion cards remain visible.
+    setPhase('complete');
   };
 
   // ---------------------------------------------------------------------------
@@ -417,6 +506,131 @@ export function CsvAiSection() {
           {analysisError && (
             <p className="text-sm text-destructive">{analysisError}</p>
           )}
+        </div>
+      )}
+
+      {/* Merchant memory summary (AIAN-04) */}
+      {(phase === 'qa' || phase === 'complete') && autoClassifiedCount > 0 && (
+        <p className="text-sm text-muted-foreground">
+          {autoClassifiedCount} merchant{autoClassifiedCount !== 1 ? 's' : ''} auto-classified from memory
+        </p>
+      )}
+
+      {/* Q&A cards (AIAN-01, AIAN-02) */}
+      {phase === 'qa' && qaCards.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="text-sm font-semibold">Uncertain Transactions</h2>
+          <p className="text-xs text-muted-foreground">
+            These transactions couldn&apos;t be confidently classified. Add context and assign a bucket for each.
+          </p>
+
+          {qaCards.map((card, idx) => (
+            <div
+              key={idx}
+              className={[
+                'border rounded-lg p-4 space-y-3',
+                card.answered
+                  ? 'border-green-500 bg-green-50 dark:bg-green-950/20'
+                  : 'border-border',
+              ].join(' ')}
+            >
+              {/* Transaction info */}
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{card.transaction.description}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {card.transaction.date} &middot; €{Math.abs(card.transaction.amountEur).toFixed(2)}
+                  </p>
+                </div>
+              </div>
+
+              {/* AI reason */}
+              <p className="text-xs text-muted-foreground italic">{card.transaction.reason}</p>
+
+              {/* Context input */}
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-muted-foreground">Context (optional)</label>
+                <input
+                  type="text"
+                  value={card.context}
+                  onChange={e =>
+                    setQACards(prev =>
+                      prev.map((c, i) => i === idx ? { ...c, context: e.target.value } : c)
+                    )
+                  }
+                  placeholder="e.g. monthly gym membership"
+                  className="text-sm border border-border rounded px-2 py-1 bg-background"
+                />
+              </div>
+
+              {/* Bucket selector */}
+              <div className="flex items-center gap-2">
+                <label className="text-xs text-muted-foreground">Bucket:</label>
+                <select
+                  value={card.bucketAccountId}
+                  onChange={e =>
+                    setQACards(prev =>
+                      prev.map((c, i) =>
+                        i === idx ? { ...c, bucketAccountId: e.target.value, answered: true, skipped: false } : c
+                      )
+                    )
+                  }
+                  className="text-xs border border-border rounded px-2 py-1 bg-background"
+                >
+                  <option value="">— select bucket —</option>
+                  {settings.overflowRatios.map(r => {
+                    const acc = accounts.find(a => a.id === r.accountId);
+                    return (
+                      <option key={r.accountId} value={r.accountId}>
+                        {acc?.name ?? r.accountId}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+
+              {/* Skip button */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() =>
+                    setQACards(prev =>
+                      prev.map((c, i) =>
+                        i === idx ? { ...c, skipped: true, answered: false } : c
+                      )
+                    )
+                  }
+                  className={
+                    card.skipped
+                      ? 'px-3 py-1 rounded text-xs font-medium bg-muted text-muted-foreground'
+                      : 'px-3 py-1 rounded text-xs font-medium border border-border hover:bg-muted'
+                  }
+                >
+                  Skip
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {/* Done with Q&A button */}
+          <button
+            onClick={handleDoneWithQA}
+            className="px-4 py-2 rounded text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            Done with Q&amp;A
+          </button>
+        </div>
+      )}
+
+      {/* Q&A skipped (no uncertain transactions) — fall through to suggestions */}
+      {phase === 'qa' && qaCards.length === 0 && (
+        <div className="space-y-2">
+          <p className="text-sm text-green-600">All transactions classified — no questions needed.</p>
+          <button
+            onClick={handleDoneWithQA}
+            className="px-4 py-2 rounded text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            Continue to floor detection
+          </button>
         </div>
       )}
 
