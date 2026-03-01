@@ -51,6 +51,52 @@
 
 ---
 
+## Milestone: v1.1 — AI-Powered Insights
+
+**Shipped:** 2026-03-01
+**Phases:** 3 (11–13) | **Plans:** 8 | **Sessions:** 1 (interactive)
+**Stats:** 32 commits, 43 files, 6,593 insertions, 135 tests passing
+
+### What Was Built
+- Schema foundation: domain type extensions (`source`, `theme`, `MerchantEntry`) with backward-compatible migrations
+- FOUC-free dark mode (system/light/dark) with localStorage mirror and Tailwind v4 dark variant fix
+- Invoice "From" field: optional client/project name threaded through the whole stack (form → store → history)
+- 5-filter history search: date range, source text, amount min/max — all AND-composed with useMemo
+- AI combined analysis: single Anthropic call returning bucket suggestions + uncertain transactions; strict `additionalProperties: false` JSON schemas
+- Q&A state machine in `CsvAiSection`: `CsvAiPhase` discriminant, merchant pre-classification, Q&A cards, `merchantStore` persistence
+- Floor detection + pre-fill: post-Q&A `callFloorDetection()` with Accept → FloorItemsSection pre-fill via lifted state + tab switch + 2-second highlight ring
+
+### What Worked
+- **Schema-first approach** — dedicating Phase 11 to types/store wiring before any UI work meant Phases 12 and 13 had zero type conflicts
+- **2-call AI session design** — combining bucket suggestions and uncertain transactions into one call kept the UX predictable and cost-bounded (≤2 API calls per import regardless of file size)
+- **Merchant pre-classification before API call** — synchronous `lookupMerchant` loop before sending to Anthropic reduced payload size and skipped known merchants from Q&A flow cleanly
+- **State machine discriminant (`CsvAiPhase`)** — explicit phase union type made the multi-step UI flow readable and prevented impossible state combinations
+- **Lifted state for cross-section pre-fill** — `pendingFloorItem` in `SettingsPage` was the clean solution for wiring `CsvAiSection` → `FloorItemsSection` without prop drilling through unrelated components
+- **TDD discipline maintained** — 19 new tests for `anthropicClient.ts` written before implementation; all 135 tests passed at phase end
+
+### What Was Inefficient
+- **REQUIREMENTS.md checkbox drift** — Phase 12 requirements (THEME, INVSRC, HIST) were implemented but never checked off in REQUIREMENTS.md; had to fix at milestone completion
+- **ROADMAP.md Phase 13 progress row** — missing milestone column in the progress table for Phase 13 (formatting bug in the executor)
+- **No formal verification phases for v1.1** — unlike v1.0 (Phases 8–9), v1.1 skipped dedicated UAT phases; the GSD verifier agent ran inline instead. This worked but means less formal evidence per requirement
+
+### Patterns Established
+- **`CsvAiPhase` discriminant union** — explicit phase state machine in complex multi-step UI; renders different JSX subtrees per phase with no boolean flag soup
+- **Anthropic JSON schema strictness** — `additionalProperties: false` on every nested object in structured output schemas; prevents hallucinated fields from silently breaking consumers
+- **pendingFloorItem + ref scroll pattern** — for cross-section pre-fill: lift state to common ancestor, switch tab, setTimeout(scroll, 50), useEffect in target section pre-fills form and calls `onPendingConsumed` before setting highlight to prevent re-trigger
+
+### Key Lessons
+1. **Check off requirements at implementation time, not at milestone end** — the Phase 12 requirements drift would have been caught immediately if executors marked `[x]` in REQUIREMENTS.md after each plan
+2. **AI session design choices are UX choices** — "at most 2 calls" was a constraint that shaped the entire Phase 13 architecture; surface this kind of constraint in CONTEXT.md so planners can design around it
+3. **Merchant pre-classification is cheap and high-value** — a synchronous dictionary lookup before any API call reduces token cost, improves Q&A relevance, and provides an immediate "N merchants auto-classified" win in the UI
+4. **Schema-first milestones pay off** — Phase 11's pure infrastructure work felt like overhead but eliminated all cross-phase type conflicts in Phases 12 and 13
+
+### Cost Observations
+- Model mix: ~100% sonnet (balanced profile)
+- Sessions: 1 interactive session (execute-phase + complete-milestone)
+- Notable: v1.1 was more focused than v1.0 (3 phases vs 10) — tight milestone scope with a clear theme resulted in zero mid-course corrections
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -58,14 +104,18 @@
 | Milestone | Sessions | Phases | Key Change |
 |-----------|----------|--------|------------|
 | v1.0 | 1 | 10 | Baseline — first milestone |
+| v1.1 | 1 | 3 | Tighter scope (3 phases); schema-first; inline verifier instead of UAT phases |
 
 ### Cumulative Quality
 
 | Milestone | Tests | Notes |
 |-----------|-------|-------|
 | v1.0 | 116 | Pure domain tests + component integration tests |
+| v1.1 | 135 | +19 new tests for anthropicClient; no regressions |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. Verification phases catch defects that implementation phases miss — treat them as first-class phases, not afterthoughts
 2. Zero-dependency domain code is easier to test, debug, and reason about independently of the UI framework
+3. Check off requirements immediately after implementation — don't let tracking debt accumulate to milestone end
+4. Schema-first phases eliminate cross-phase type conflicts — worth the apparent overhead of a "pure infrastructure" phase
