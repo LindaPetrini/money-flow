@@ -5,7 +5,7 @@
  * using vi.stubGlobal to mock fetch. No real API calls are made.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
   callCombinedAnalysis,
   callFloorDetection,
