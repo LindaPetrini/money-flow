@@ -30,8 +30,8 @@ Requirements for the AI-Powered Insights milestone. Each maps to roadmap phases.
 - [x] **AIAN-02**: User can provide context and assign a bucket for each uncertain transaction
 - [x] **AIAN-03**: Merchant→bucket assignments persist across future imports
 - [x] **AIAN-04**: Known merchants are pre-classified on future imports (skipping Q&A)
-- [ ] **AIAN-05**: AI detects recurring expenses from CSV and suggests them as floor items
-- [ ] **AIAN-06**: Confirming a floor item suggestion pre-fills the floor item form
+- [x] **AIAN-05**: AI detects recurring expenses from CSV and suggests them as floor items
+- [x] **AIAN-06**: Confirming a floor item suggestion pre-fills the floor item form
 
 ## Future Requirements
 
@@ -76,8 +76,8 @@ Note: Phase 11 (Schema Foundation) is pure infrastructure — it carries no v1.1
 | AIAN-02 | Phase 13 | Complete |
 | AIAN-03 | Phase 13 | Complete |
 | AIAN-04 | Phase 13 | Complete |
-| AIAN-05 | Phase 13 | Pending |
-| AIAN-06 | Phase 13 | Pending |
+| AIAN-05 | Phase 13 | Complete |
+| AIAN-06 | Phase 13 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 14 total

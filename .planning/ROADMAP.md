@@ -31,7 +31,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 - [x] **Phase 11: Schema Foundation** — Add new domain types and merchant store that all v1.1 features depend on (completed 2026-02-28)
 - [x] **Phase 12: Quick Wins** — Dark mode toggle, invoice source field, client display in history, history search/filter (completed 2026-02-28)
-- [ ] **Phase 13: AI Layer** — Transaction Q&A, merchant memory persistence, AI floor item detection
+- [x] **Phase 13: AI Layer** — Transaction Q&A, merchant memory persistence, AI floor item detection (completed 2026-03-01)
 
 ## Phase Details
 
@@ -101,4 +101,4 @@ Plans:
 | 10. Fix Integration Defects | v1.0 | 3/3 | Complete | 2026-02-28 |
 | 11. Schema Foundation | v1.1 | 2/2 | Complete | 2026-02-28 |
 | 12. Quick Wins | v1.1 | 3/3 | Complete    | 2026-02-28 |
-| 13. AI Layer | 2/3 | In Progress|  | - |
+| 13. AI Layer | 3/3 | Complete   | 2026-03-01 | - |
