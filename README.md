@@ -1,6 +1,6 @@
 # Money Flow
 
-Freelance budget allocator. When an invoice arrives, it tells you exactly where every euro goes -- so you never have to think about it in the moment.
+Freelance budget allocator. When an invoice arrives, it tells you exactly where every euro goes -- so you never have to think about it in the moment. (vibe-coded!)
 
 ![Dashboard](docs/dashboard.png)
 
